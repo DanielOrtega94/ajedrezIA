@@ -5,29 +5,31 @@ import heuristicas as h
 # ejecuta el juego hasta que se termine
 #funcion principal
 def juego(board):
-	while(not board.is_game_over()):
+	while(not board.is_game_over() and not board.is_variant_end()):
 		turno_jugador(board)
 		turno_ia(board)
+	print(board.result)	
+	#agregar para definir quien es el jugador ganador	
 
-
-
+#problema con el turno del jugador si el string no es de tam 4
 #va en juego.py
-
 def turno_jugador(board):
 	print("Turno jugador.... Esperando movida jugador, aprete h para mostrar disponibles")
 	print(board)
 	entrada =  input()
-	if entrada == 'h' or entrada == 'H':
-		print("Actualmente tienes disponibles " + str(board.legal_moves.count())+ ' mov disponibles' )
-		for i in board.legal_moves:			
-			print(board.uci(i) + ' : ' + str(board.piece_at(i.from_square)))
-		entrada =  input()
-	if(len(entrada) ==4):
+	while(entrada):
+		if entrada == 'h' or entrada == 'H':
+			print("Actualmente tienes disponibles " + str(board.legal_moves.count())+ ' mov disponibles' )
+			for i in board.legal_moves:			
+				print(board.uci(i) + ' : ' + str(board.piece_at(i.from_square)))
+		while(len(entrada)!=4):
+			entrada=input()
 		mov = chess.Move.from_uci(entrada)
-		if(mov in board.legal_moves):
+		if mov in board.legal_moves:
 			board.push(mov)
-		else:	
-			print("Ingrese nuevamente un movimiento valido")
+			break			
+		print("movimiento invalido intente nuevamente")
+		entrada=input()
 
 def turno_ia(board):
 	print("Turno Computador....")
@@ -42,20 +44,19 @@ def valor_heuristicas(board):
     total_points = 0
     total_points += h.material(board, 100)
     total_points += h.piece_moves(board, 50)
-    #total_points += h.in_check(board, 1)
+    total_points += h.in_check(board, 1)
     #total_points += h.pawn_structure(board, 1)
     return total_points
 
 
+#debo hacer una funcion que me muestre las piezas capturadas hasta el momento
+
 #revisa si el movimiento es valido, si lo es, lo ingresa, sino solicita otro movimiento
-def ingresar_mov(board,entrada):
-	mov = chess.Move.from_uci(entrada)
-	if(mov in board.legal_moves):
-		board.push(mov)
+#def ingresar_mov(board,entrada):
+#	mov = chess.Move.from_uci(entrada)
+#	if(mov in board.legal_moves):
+#		board.push(mov)
 		#print(board)
-
-
-
 				
 def mejor_movimiento_(board):
 	mejor_movimiento = 0
@@ -63,7 +64,8 @@ def mejor_movimiento_(board):
 	for i in board.legal_moves:
 		board.push(i)
 		valores = valor_heuristicas(board)
-		#print(valores[1])
+		print(valores)
+		#print(valores)
 		if valores>mejor_valor:
 			mejor_movimiento=i
 			mejor_valor =valores

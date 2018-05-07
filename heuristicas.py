@@ -54,8 +54,7 @@ def material(board,peso):
 
 
 #peso=50
-
-#esta heuritisica se basa en los movimientos futuos
+#esta heuritisica se basa en los movimientos futuros, da ptos si los cuadros estan disponibles para usarse
 def piece_moves(board, peso):
     black_points = 0
     for i in board.legal_moves:
@@ -66,6 +65,25 @@ def piece_moves(board, peso):
             if i.to_square in square_values:
                 black_points -= square_values[i.to_square]
     return black_points*peso   
+
+
+#peso=01
+#cuenta si el jugador esta en jaque o nop|
+def in_check(board, peso):
+    black_points = 0
+
+    if board.turn:
+        if not board.is_check():
+            black_points += 1 * peso
+        else:
+            black_points += float("inf")
+    else:
+        if not board.is_check():
+            black_points -= 1 * peso
+        else:
+            black_points += float("-inf")
+    return black_points
+
 
 #######################################DE AQUI HACIA ABAJO FALTA ARREGLAR
 
@@ -102,22 +120,5 @@ def pawn_structure(board_state, weight):
                         black_points += 1
     return black_points * weight
 
-#peso=01
-def in_check(game, weight):
-    black_points = 0
-    current_status = game.status
-    # Turn should be 'w' or 'b'
-    turn = str(game).split(" ")[1]
-    # Check or Checkmate situations
-    if turn == "w":
-        if current_status == 1:
-            black_points += 1 * weight
-        elif current_status == 2:
-            black_points += float("inf")
-    else:
-        if current_status == 1:
-            black_points -= 1 * weight
-        elif current_status == 2:
-            black_points += float("-inf")
-    return black_points
+
 
