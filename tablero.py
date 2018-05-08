@@ -10,7 +10,7 @@ board = chess.Board()
 
 
 
-print(f.piezas_comidas(board))
+#print(f.piezas_comidas(board))
 			
 #hace que se generen juegos aleatoriamente
 f.juego(board)

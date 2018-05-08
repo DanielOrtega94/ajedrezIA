@@ -29,9 +29,7 @@ def contar_piezas(board):
 	return (countw,countb)
 
 
-
 ################################funciones de las heuristicas como tal
-
 
 #peso=100
 def material(board,peso):
@@ -85,40 +83,28 @@ def in_check(board, peso):
     return black_points
 
 
-#######################################DE AQUI HACIA ABAJO FALTA ARREGLAR
+
 
 
 #peso=01
-def pawn_structure(board_state, weight):
+def pawn_structure(board, peso):
     black_points = 0
-    board_state, current_player = [segment for segment in board_state.split()[:2]]
-    board_state = board_state.split("/")
+    turno=board.turn
+    #valora defender a los peones
+    numero=0
+    contador=1
+    for i in range(8):
+        for j in range(8):
 
-    # convert fen into matrix:
-    board_state_arr = []
-    for row in board_state:
-    	row_arr = []
-    	for char in row:
-    		if char.isdigit():
-    			for i in range(int(char)):
-    				row_arr.append(" ")
-    		else:
-    			row_arr.append(char)
-    	board_state_arr.append(row_arr)
-
-    # determine pawn to search for based on whose turn it is
-    for i, row in enumerate(board_state_arr):
-        for j in range(len(row)):
-            if board_state_arr[i][j] == "p":
-                tl = i-1, j-1
-                tr = i-1, j+1
+            numero=contador*(i)+ (j)
+            if(board.piece_type_at(numero) == chess.PAWN):
+                tl = i-1, j-1 #defensar izq
+                tr = i-1, j+1   #defensar der
                 if tl[0] >= 0 and tl[0] <= 7 and tl[1] >= 0 and tl[1] <= 7:
-                    if board_state_arr[tl[0]][tl[1]] == "p":
+                    numero=contador*(i)+ (j)
+                    if board.piece_type_at(numero) == chess.PAWN:
                         black_points += 1
-                if tr[0] >= 0 and tr[0] <= 7 and tr[1] >= 0 and tr[1] <= 7:
-                    if board_state_arr[tr[0]][tr[1]] == "p":
-                        black_points += 1
-    return black_points * weight
-
-
+        contador+=1 
+    return black_points * peso
+#######################################DE AQUI HACIA ABAJO FALTA ARREGLAR
 

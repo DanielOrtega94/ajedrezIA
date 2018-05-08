@@ -51,7 +51,7 @@ def valor_heuristicas(board):
     total_points += h.material(board, 100)
     total_points += h.piece_moves(board, 50)
     total_points += h.in_check(board, 1)
-    #total_points += h.pawn_structure(board, 1)
+    total_points += h.pawn_structure(board, 1)
     return total_points
 
 
@@ -77,7 +77,7 @@ def mejor_movimiento_(board):
 	for i in board.legal_moves:
 		board.push(i)
 		valores = valor_heuristicas(board)
-		print(valores)
+		#print(valores)
 		#print(valores)
 		if valores>mejor_valor:
 			mejor_movimiento=i
@@ -119,7 +119,7 @@ def minimax(board,profundidad,turno):
 # entregar marcador de valores de piezas actuales
 #mal implementado
 def marcador(mapa):
-	claves = mapa.keys()
+	claves = mapa.keys()	
 	for i in claves:
 		print(i)
 
