@@ -9,6 +9,11 @@ valores_piezas={'P':1,'N':3,'B':3,'R':5,'Q':9,'K':0,
 square_values = {28: 1, 36: 1, 27: 1, 35: 1, 42: 0.5, 42: 0.5, 44: 0.5, 45: 0.5,
                     18: 0.5, 19: 0.5, 20: 0.5, 21: 0.5, 26: 0.5, 34: 0.5, 29: 0.5, 37: 0.5}
 
+piezas_comidas_blancas,piezas_actuales_negras = {}, {}
+
+totales_blancas = {'R': 2, 'N': 2, 'B': 2, 'Q': 1, 'K': 1, 'P': 8}
+totales_negras = {'p': 8, 'r': 2, 'n': 2, 'b': 2, 'q': 1, 'k': 1}
+
 def contar_piezas(board):
 	mapita=board.piece_map() 
 	countw={}
@@ -26,7 +31,27 @@ def contar_piezas(board):
 					countb[mapita[i].symbol()] = 1
 	return (countw,countb)
 
+
+def piezas_comidas(board):
+    piezas_actuales_blancas, piezas_actuales_negras = contar_piezas(board)
+    piezas_comidas_blancas = {key : totales_blancas[key] - piezas_actuales_blancas.get(key,0) for key in totales_blancas}
+    piezas_comidas_negras = {key : totales_negras[key] - piezas_actuales_negras.get(key,0) for key in totales_negras}
+    return (piezas_comidas_blancas,piezas_comidas_negras)
+
+
 ################################funciones de las heuristicas como tal
+#peso= 50
+def capturar_piezas(board,peso):
+    puntuacion=0
+    blancas,negras=piezas_comidas(board)
+    if board.turn:
+        for key in blancas:
+            puntuacion+=blancas[key]*valores_piezas[key]
+    else:
+        for key in blancas:
+            puntuacion-=blancas[key]*valores_piezas[key]   
+    return puntuacion*peso
+
 
 #peso=100
 def material(board,peso):
@@ -100,5 +125,9 @@ def pawn_structure(board, peso):
                         black_points += 1
         contador+=1 
     return black_points * peso
+
+
+
+
 #######################################DE AQUI HACIA ABAJO FALTA ARREGLAR
 

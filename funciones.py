@@ -1,45 +1,53 @@
 import chess
 import heuristicas as h
 
-
-piezas_comidas_blancas,piezas_actuales_negras = {}, {}
-
-totales_blancas = {'R': 2, 'N': 2, 'B': 2, 'Q': 1, 'K': 1, 'P': 8}
-totales_negras = {'p': 8, 'r': 2, 'n': 2, 'b': 2, 'q': 1, 'k': 1}
-
-
+def validar(mov):
+	return 'a' <= mov[0] <= 'h' and '1' <= mov[1] <= '8' and 'a' <= mov[2] <= 'h' and '1' <= mov[3] <= '8'
+def imprimir(board):
+	print(board)
 # ejecuta el juego hasta que se termine
 #funcion principal
 def juego(board):
 	while(not board.is_game_over() and not board.is_variant_end()):
 		turno_jugador(board)
-		turno_ia(board)
+		if not board.is_game_over() and not board.is_variant_end():
+			turno_ia(board)
+		else:
+			break	
 	print(board.result)	
 	#agregar para definir quien es el jugador ganador	
+
+#while(len(entrada)!=4):
+		#	entrada=input()
+		#	if validar(entrada):
+		#		break
 
 #problema con el turno del jugador si el string no es de tam 4
 #va en juego.py
 def turno_jugador(board):
 	#print("Turno jugador.... Esperando movida jugador, aprete h para mostrar disponibles")
-	blancas,negras=piezas_comidas(board)
-	print("Marcados")
+	blancas,negras=h.piezas_comidas(board)
 	print("capturadas negras", blancas)
-	print("capturadas blacas", negras)
+	print("capturadas blancas", negras)
 	print(board)
 	entrada =  input()
 	while(entrada):
+		if entrada == 'v' or entrada == '\n':
+			imprimir(board)
+
 		if entrada == 'h' or entrada == 'H':
 			print("Actualmente tienes disponibles " + str(board.legal_moves.count())+ ' mov disponibles' )
 			for i in board.legal_moves:			
-				print(board.uci(i) + ' : ' + str(board.piece_at(i.from_square)))
-		while(len(entrada)!=4):
-			entrada=input()
-		mov = chess.Move.from_uci(entrada)
-		if mov in board.legal_moves:
-			board.push(mov)
-			break			
-		print("movimiento invalido intente nuevamente")
-		entrada=input()
+				print(str(board.piece_at(i.from_square)) + ' : ' + board.uci(i))
+
+		if(len(entrada)==4 and validar(entrada)):		
+			mov = chess.Move.from_uci(entrada)
+			#print(type(board.legal_moves))
+			if mov in board.legal_moves:
+				board.push(mov)
+				break			
+			print("movimiento invalido intente nuevamente")
+		entrada =  input()
 
 def turno_ia(board):
 	print("Turno Computador....")
@@ -53,18 +61,11 @@ def turno_ia(board):
 def valor_heuristicas(board):
     total_points = 0
     total_points += h.material(board, 100)
+    total_points += h.capturar_piezas(board, 50)
     total_points += h.piece_moves(board, 50)
     total_points += h.in_check(board, 1)
     total_points += h.pawn_structure(board, 1)
     return total_points
-
-
-def piezas_comidas(board):
-	piezas_actuales_blancas, piezas_actuales_negras = h.contar_piezas(board)
-	piezas_comidas_blancas = {key : totales_blancas[key] - piezas_actuales_blancas.get(key,0) for key in totales_blancas}
-	piezas_comidas_negras = {key : totales_negras[key] - piezas_actuales_negras.get(key,0) for key in totales_negras}
-	return (piezas_comidas_blancas,piezas_comidas_negras)
-
 
 #debo hacer una funcion que me muestre las piezas capturadas hasta el momento
 
@@ -146,5 +147,7 @@ def minimax(board, heuristic, next_moves, current_depth=0, max_depth=4):
     else:
         # max player's turn
         return max([minimax(node, heuristic, current_depth, max_depth) for node in next_moves()])
+
+
 
 '''
