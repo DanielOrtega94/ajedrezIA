@@ -2,6 +2,12 @@ import chess
 import heuristicas as h
 
 
+piezas_comidas_blancas,piezas_actuales_negras = {}, {}
+
+totales_blancas = {'R': 2, 'N': 2, 'B': 2, 'Q': 1, 'K': 1, 'P': 8}
+totales_negras = {'p': 8, 'r': 2, 'n': 2, 'b': 2, 'q': 1, 'k': 1}
+
+
 # ejecuta el juego hasta que se termine
 #funcion principal
 def juego(board):
@@ -47,6 +53,13 @@ def valor_heuristicas(board):
     total_points += h.in_check(board, 1)
     #total_points += h.pawn_structure(board, 1)
     return total_points
+
+
+def piezas_comidas(board):
+	piezas_actuales_blancas, piezas_actuales_negras = h.contar_piezas(board)
+	piezas_comidas_blancas = {key : totales_blancas[key] - piezas_actuales_blancas.get(key,0) for key in totales_blancas}
+	piezas_comidas_negras = {key : totales_negras[key] - piezas_actuales_negras.get(key,0) for key in totales_negras}
+	return (piezas_comidas_blancas,piezas_comidas_negras)
 
 
 #debo hacer una funcion que me muestre las piezas capturadas hasta el momento

@@ -6,6 +6,12 @@ import heuristicas as h
 
 #instancia el tablero
 board = chess.Board()
+
+
+
+
+print(f.piezas_comidas(board))
+			
 #hace que se generen juegos aleatoriamente
 f.juego(board)
 
