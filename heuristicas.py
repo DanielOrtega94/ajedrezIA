@@ -9,8 +9,6 @@ valores_piezas={'P':1,'N':3,'B':3,'R':5,'Q':9,'K':0,
 square_values = {28: 1, 36: 1, 27: 1, 35: 1, 42: 0.5, 42: 0.5, 44: 0.5, 45: 0.5,
                     18: 0.5, 19: 0.5, 20: 0.5, 21: 0.5, 26: 0.5, 34: 0.5, 29: 0.5, 37: 0.5}
 
-
-
 def contar_piezas(board):
 	mapita=board.piece_map() 
 	countw={}
@@ -27,7 +25,6 @@ def contar_piezas(board):
 				else:
 					countb[mapita[i].symbol()] = 1
 	return (countw,countb)
-
 
 ################################funciones de las heuristicas como tal
 
@@ -81,9 +78,6 @@ def in_check(board, peso):
         else:
             black_points += float("-inf")
     return black_points
-
-
-
 
 
 #peso=01

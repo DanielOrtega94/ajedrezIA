@@ -1,0 +1,11 @@
+
+*.pyc
+*.png
+*.sublime-workspace
+*.sublime-project
+*.pdf
+*.descarga
+*.css
+Chess-AI-master/
+Documentacion/
+*.html

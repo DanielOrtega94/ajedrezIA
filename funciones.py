@@ -20,7 +20,11 @@ def juego(board):
 #problema con el turno del jugador si el string no es de tam 4
 #va en juego.py
 def turno_jugador(board):
-	print("Turno jugador.... Esperando movida jugador, aprete h para mostrar disponibles")
+	#print("Turno jugador.... Esperando movida jugador, aprete h para mostrar disponibles")
+	blancas,negras=piezas_comidas(board)
+	print("Marcados")
+	print("capturadas negras", blancas)
+	print("capturadas blacas", negras)
 	print(board)
 	entrada =  input()
 	while(entrada):
