@@ -1,30 +1,30 @@
 import chess
+import os
 import heuristicas as h
 
 def validar(mov):
 	return 'a' <= mov[0] <= 'h' and '1' <= mov[1] <= '8' and 'a' <= mov[2] <= 'h' and '1' <= mov[3] <= '8'
+
 def imprimir(board):
 	print(board)
 # ejecuta el juego hasta que se termine
 #funcion principal
 def juego(board):
 	while(not board.is_game_over() and not board.is_variant_end()):
+		print("turno numero: " + str(board.fullmove_number))
 		turno_jugador(board)
 		if not board.is_game_over() and not board.is_variant_end():
 			turno_ia(board)
 		else:
 			break	
 	print(board.result)	
-	#agregar para definir quien es el jugador ganador	
 
-#while(len(entrada)!=4):
-		#	entrada=input()
-		#	if validar(entrada):
-		#		break
+	#agregar para definir quien es el jugador ganador	
 
 #problema con el turno del jugador si el string no es de tam 4
 #va en juego.py
 def turno_jugador(board):
+	print("Turno jugador....")
 	#print("Turno jugador.... Esperando movida jugador, aprete h para mostrar disponibles")
 	blancas,negras=h.piezas_comidas(board)
 	print("capturadas negras", blancas)
@@ -32,15 +32,24 @@ def turno_jugador(board):
 	print(board)
 	entrada =  input()
 	while(entrada):
-		if entrada == 'v' or entrada == '\n':
+		print("tamano entrada " + str(len(entrada)) + " " + entrada)
+		#if len(entrada) == 0:
+		#	print("enter")
+		if entrada == 'v' :
 			imprimir(board)
+		
+		elif entrada == 'r' :
+			print("Reiniciando Juego")
+			os.system('cls')
+			board.reset()
 
-		if entrada == 'h' or entrada == 'H':
-			print("Actualmente tienes disponibles " + str(board.legal_moves.count())+ ' mov disponibles' )
+
+		elif entrada == 'h' or entrada == 'H':
+			print("Mov disponibles" + str(board.legal_moves.count()))
 			for i in board.legal_moves:			
 				print(str(board.piece_at(i.from_square)) + ' : ' + board.uci(i))
 
-		if(len(entrada)==4 and validar(entrada)):		
+		elif(len(entrada)==4 and validar(entrada)):		
 			mov = chess.Move.from_uci(entrada)
 			#print(type(board.legal_moves))
 			if mov in board.legal_moves:
@@ -48,6 +57,7 @@ def turno_jugador(board):
 				break			
 			print("movimiento invalido intente nuevamente")
 		entrada =  input()
+	return False
 
 def turno_ia(board):
 	print("Turno Computador....")
@@ -62,6 +72,7 @@ def valor_heuristicas(board):
     total_points = 0
     total_points += h.material(board, 100)
     total_points += h.capturar_piezas(board, 50)
+    total_points += h.evadir_perdida(board, 50)
     total_points += h.piece_moves(board, 50)
     total_points += h.in_check(board, 1)
     total_points += h.pawn_structure(board, 1)
@@ -134,7 +145,7 @@ def marcador(mapa):
 def quedan_movimientos():
 	return False
 
-'''
+
 
 def minimax(board, heuristic, next_moves, current_depth=0, max_depth=4):
     current_depth += 1
@@ -147,7 +158,3 @@ def minimax(board, heuristic, next_moves, current_depth=0, max_depth=4):
     else:
         # max player's turn
         return max([minimax(node, heuristic, current_depth, max_depth) for node in next_moves()])
-
-
-
-'''

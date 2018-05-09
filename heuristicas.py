@@ -127,7 +127,11 @@ def pawn_structure(board, peso):
     return black_points * peso
 
 
-
+#heuristica para correr de jaque
+def evadir_perdida(board,peso):
+    black_points=0
+    return black_points*peso
+#heuristica para comer piezas
 
 #######################################DE AQUI HACIA ABAJO FALTA ARREGLAR
 
