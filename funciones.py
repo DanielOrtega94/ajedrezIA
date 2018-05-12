@@ -3,6 +3,7 @@ import os
 import heuristicas as h
 import nodo as n
 
+
 # las funciones se actualizacion para trabajar con pseudo legal moves generator
 
 def marcador(board):
@@ -10,6 +11,11 @@ def marcador(board):
     print("capturadas x negras", blancas)
     print("capturadas x blancas", negras)
 
+def escribir_fichero(texto):
+	F = open("salida.txt","a")
+	F.write(texto)
+	F.write("\n")
+	F.close() 
 
 def validar(mov):
     return 'a' <= mov[0] <= 'h' and '1' <= mov[1] <= '8' and 'a' <= mov[2] <= 'h' and '1' <= mov[3] <= '8'
@@ -65,8 +71,12 @@ def turno_ia(board):
     print("Turno Computador....")
     #mov = mejor_movimiento_(board)
     # print(mov)
-    valor,mov=ab_minimax(board)
-    print(mov)
+    
+    llamadas=0
+    valor,mov=ab_minimax(board,llamadas)
+  
+    palabra= "Se han recorrido" + str(llamadas) + " de Nodos con alpha-beta en jugada " +str(board.fullmove_number)
+    escribir_fichero(palabra)
     board.push(mov)
 
 
@@ -104,8 +114,9 @@ def greedy(board):
 
 
 
-def ab_minimax(board, current_depth=0, max_depth=4,alpha=float("-inf"),beta= float("inf"),llamadas=0):
+def ab_minimax(board, llamadas,current_depth=0, max_depth=4,alpha=float("-inf"),beta= float("inf")):
     current_depth += 1
+    llamadas += 1
 
     if current_depth == max_depth:
         # get heuristic of each node
@@ -119,7 +130,7 @@ def ab_minimax(board, current_depth=0, max_depth=4,alpha=float("-inf"),beta= flo
         best_move = None
         for i in board.legal_moves:
             board.push(i)
-            algo, algo2 = ab_minimax(board, current_depth, max_depth,alpha,beta)
+            algo, algo2 = ab_minimax(board, llamadas,current_depth, max_depth,alpha,beta)
             board.pop()
             beta=min(beta,algo)
             if algo < best:
@@ -127,7 +138,7 @@ def ab_minimax(board, current_depth=0, max_depth=4,alpha=float("-inf"),beta= flo
                 best_move = i 
             if best<alpha:
                 break    
-        return best, best_move,llamadas
+        return best, best_move
 
     else:
         # max player's turn
@@ -136,7 +147,7 @@ def ab_minimax(board, current_depth=0, max_depth=4,alpha=float("-inf"),beta= flo
         best_move = None
         for i in board.legal_moves:
             board.push(i)
-            algo, algo2 = ab_minimax(board, current_depth, max_depth,alpha,beta)
+            algo, algo2 = ab_minimax(board, llamadas,current_depth, max_depth,alpha,beta)
             board.pop()
             alpha=max(alpha,algo)
             if algo > best:
@@ -144,11 +155,12 @@ def ab_minimax(board, current_depth=0, max_depth=4,alpha=float("-inf"),beta= flo
                 best_move = i
             if best>beta:
                 break  
-        return best, best_move
+        return (best,best_move)
 
 
-def minimax(board, current_depth=0, max_depth=4,llamadas=0):
-    current_depth,llamadas += 1,+= 1
+def minimax(board, current_depth=0, max_depth=4):
+    current_depth += 1
+    llamadas += 1
 
     if current_depth == max_depth:
         # get heuristic of each node
@@ -161,13 +173,13 @@ def minimax(board, current_depth=0, max_depth=4,llamadas=0):
         best = float('inf')
         for i in board.legal_moves:
             board.push(i)
-            algo, algo2 = minimax(board, current_depth, max_depth,llamadas)
+            algo, algo2 = minimax(board, current_depth, max_depth)
             board.pop()
             if algo < best:
                 best = algo
                 best_move = i 
 
-        return best, best_move,llamadas
+        return best, best_move
     else:
         # max player's turn
         #self.is_turn = True
@@ -175,12 +187,12 @@ def minimax(board, current_depth=0, max_depth=4,llamadas=0):
         best_move = None
         for i in board.legal_moves:
             board.push(i)
-            algo, algo2 = minimax(board, current_depth, max_depth,llamadas)
+            algo, algo2 = minimax(board, current_depth, max_depth)
             board.pop()
             if algo > best:
                 best = algo
                 best_move = i 
-        return best, best_move,llamadas
+        return best, best_move
 
 
 
