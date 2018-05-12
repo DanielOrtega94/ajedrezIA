@@ -73,9 +73,11 @@ def turno_ia(board):
     # print(mov)
     
     llamadas=0
-    valor,mov=ab_minimax(board,llamadas)
+    valor,mov,llamadas=ab_minimax(board,llamadas)
+    #valor,mov,llamadas=minimax(board,llamadas)
   
     palabra= "Se han recorrido" + str(llamadas) + " de Nodos con alpha-beta en jugada " +str(board.fullmove_number)
+    
     escribir_fichero(palabra)
     board.push(mov)
 
@@ -117,11 +119,13 @@ def greedy(board):
 def ab_minimax(board, llamadas,current_depth=0, max_depth=4,alpha=float("-inf"),beta= float("inf")):
     current_depth += 1
     llamadas += 1
+    print(llamadas)
 
     if current_depth == max_depth:
+        
         # get heuristic of each node
         valor = valor_heuristicas(board)
-        return valor, None
+        return valor, None,llamadas
 
     if current_depth % 2 == 0:
         # min player's turn
@@ -130,7 +134,7 @@ def ab_minimax(board, llamadas,current_depth=0, max_depth=4,alpha=float("-inf"),
         best_move = None
         for i in board.legal_moves:
             board.push(i)
-            algo, algo2 = ab_minimax(board, llamadas,current_depth, max_depth,alpha,beta)
+            algo, algo2,llamadas = ab_minimax(board,llamadas,current_depth, max_depth,alpha,beta)
             board.pop()
             beta=min(beta,algo)
             if algo < best:
@@ -138,8 +142,7 @@ def ab_minimax(board, llamadas,current_depth=0, max_depth=4,alpha=float("-inf"),
                 best_move = i 
             if best<alpha:
                 break    
-        return best, best_move
-
+        return best, best_move,llamadas
     else:
         # max player's turn
         #self.is_turn = True
@@ -147,7 +150,7 @@ def ab_minimax(board, llamadas,current_depth=0, max_depth=4,alpha=float("-inf"),
         best_move = None
         for i in board.legal_moves:
             board.push(i)
-            algo, algo2 = ab_minimax(board, llamadas,current_depth, max_depth,alpha,beta)
+            algo, algo2,llamadas = ab_minimax(board,llamadas,current_depth, max_depth,alpha,beta)
             board.pop()
             alpha=max(alpha,algo)
             if algo > best:
@@ -155,17 +158,18 @@ def ab_minimax(board, llamadas,current_depth=0, max_depth=4,alpha=float("-inf"),
                 best_move = i
             if best>beta:
                 break  
-        return (best,best_move)
+        return (best,best_move,llamadas)
 
 
-def minimax(board, current_depth=0, max_depth=4):
+def minimax(board,llamadas,current_depth=0, max_depth=4):
     current_depth += 1
     llamadas += 1
+            
 
     if current_depth == max_depth:
         # get heuristic of each node
         valor = valor_heuristicas(board)
-        return valor, None
+        return valor, None,llamadas
 
     if current_depth % 2 == 0:
         # min player's turn
@@ -173,13 +177,14 @@ def minimax(board, current_depth=0, max_depth=4):
         best = float('inf')
         for i in board.legal_moves:
             board.push(i)
-            algo, algo2 = minimax(board, current_depth, max_depth)
+
+            algo, algo2,llamadas = minimax(board,llamadas,current_depth, max_depth)
             board.pop()
             if algo < best:
                 best = algo
                 best_move = i 
 
-        return best, best_move
+        return best, best_move,llamadas
     else:
         # max player's turn
         #self.is_turn = True
@@ -187,12 +192,13 @@ def minimax(board, current_depth=0, max_depth=4):
         best_move = None
         for i in board.legal_moves:
             board.push(i)
-            algo, algo2 = minimax(board, current_depth, max_depth)
+            
+            algo, algo2,llamadas = minimax(board,llamadas,current_depth, max_depth)
             board.pop()
             if algo > best:
                 best = algo
                 best_move = i 
-        return best, best_move
+        return best, best_move,llamadas
 
 
 
