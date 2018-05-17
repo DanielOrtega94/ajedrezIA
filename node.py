@@ -96,9 +96,9 @@ def UCT(rootstate, itermax,board, verbose = False):
         # Expand
         if node.untriedMoves != []: # if we can expand (i.e. state/node is non-terminal)
             m = random.choice(node.untriedMoves)
-           # print(m) 
             state.push(m)
             node = node.AddChild(m,state,board) # add child and descend tree
+        
         #print("rollout")    
         # Rollout - this can often be made orders of magnitude quicker using a state.GetRandomMove() function
         while not state.is_game_over() and list(state.legal_moves)  != []: # while state is non-terminal
@@ -109,9 +109,9 @@ def UCT(rootstate, itermax,board, verbose = False):
         #print("backpropagate")    
         # Backpropagate
         while node != None: # backpropagate from the expanded node and work back to the root node
-            #print(state.result())
             node.Update(resultados(state)) # state is terminal. Update node with result from POV of node.playerJustMoved
             node = node.parentNode
+            #print(state.result())
 
     # Output some information about the tree - can be omitted
     if (verbose): 

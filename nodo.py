@@ -17,14 +17,12 @@ class Nodo(object):
         self.valor = valor
 
 
-# board.fen()
 
 def imprime_hijos(nodo):
     for n in nodo.hijos:
         print(str(n.padre.movimiento) + " " + str(n.movimiento) +
               " " + str(n.valor) + " " + str(n.profundidad))
 
-# necesito hacerlo recursivo
 
 
 def poblar_hijos(lista, padre):
@@ -36,3 +34,15 @@ def poblar_hijos(lista, padre):
         print(len(h.hijos))
         poblar_hijos(lista, h)
         lista.pop()
+
+def genera_hijo(lista):
+    mov = []
+    for i in lista.legal_moves:
+        # print(i)
+        lista.push(i)
+        aux = n.Nodo(i, 0, lista.fen())
+        mov.append(aux)
+        lista.pop()
+    # print(mov)
+    return mov
+
