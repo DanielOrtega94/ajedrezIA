@@ -85,7 +85,7 @@ def mensaje_impreso(a1, a2, board):
 
 def turno_ia(board, llamadas=0, llam=0):
     print("Turno Computador....")
-    
+
     '''
     inicio = time.time()
     mov = mejor_movimiento_(board)
@@ -93,7 +93,7 @@ def turno_ia(board, llamadas=0, llam=0):
     tiempo = final - inicio
     print("tiempo tomado ", tiempo)
     '''
-    
+
     '''
     inicio = time.time()
     valor, mov, llam = minimax(board, llam)
@@ -104,12 +104,12 @@ def turno_ia(board, llamadas=0, llam=0):
     tiempo = final - inicio
     print("tiempo tomado ", tiempo)
     '''
-    
+
     inicio = time.time()
-    mov = no.UCT(rootstate=board, itermax=25, verbose=False, board=board)
+    mov = no.UCT(rootstate=board, itermax=700, verbose=False, board=board)
     final = time.time()
     tiempo = final - inicio
-   # print("tiempo tomado ", tiempo)
+    print("tiempo tomado ", tiempo)
 
     board.push(mov)
 
@@ -124,6 +124,7 @@ def valor_heuristicas(board):
     return total_points
 
 ##########################################################################
+
 
 def greedy(board):
     mejor_movimiento = 0
@@ -144,6 +145,7 @@ def greedy(board):
     return mejor_movimiento
 
 ##########################################################################
+
 
 def minimax(board, llamadas, current_depth=0, max_depth=4):
     current_depth += 1
