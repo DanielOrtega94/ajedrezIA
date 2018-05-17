@@ -106,7 +106,9 @@ def turno_ia(board, llamadas=0, llam=0):
     '''
 
     inicio = time.time()
-    mov = no.UCT(rootstate=board, itermax=700, verbose=False, board=board)
+    mov = no.UCT(rootstate=board, itermax=500, verbose=False, board=board)
+   # mov = no.UCT(rootstate=board, itermax=700, verbose=False, board=board)
+    print(mov)
     final = time.time()
     tiempo = final - inicio
     print("tiempo tomado ", tiempo)

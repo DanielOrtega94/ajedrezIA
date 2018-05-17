@@ -3,6 +3,14 @@ import chess
 import random
 import copy
 
+
+def escribir_fichero(texto):
+    F = open("ganadas.txt", "a")
+    F.write(texto)
+    F.write("\n")
+    F.close()
+
+
 class Node:
 
     def __init__(self, move=None, parent=None, state=None, board=None):
@@ -93,25 +101,32 @@ def UCT(rootstate, itermax,board, verbose = False):
             node = node.UCTSelectChild()
             state.push(node.move)
         #print("expand")
+
         # Expand
         if node.untriedMoves != []: # if we can expand (i.e. state/node is non-terminal)
             m = random.choice(node.untriedMoves)
             state.push(m)
+            #print(state)
+            #print("")
             node = node.AddChild(m,state,board) # add child and descend tree
         
         #print("rollout")    
+        # not state.is_stalemate() and not state.is_insufficient_material() and
         # Rollout - this can often be made orders of magnitude quicker using a state.GetRandomMove() function
-        while not state.is_game_over() and list(state.legal_moves)  != []: # while state is non-terminal
+        while not state.is_game_over()and  list(state.legal_moves)  != []: # while state is non-terminal
             state.push(random.choice(list(state.legal_moves)))
-         #   print(state)
-          #  print("")
+            #print(state)
+            #print("")
+        #print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")    
 
         #print("backpropagate")    
         # Backpropagate
         while node != None: # backpropagate from the expanded node and work back to the root node
             node.Update(resultados(state)) # state is terminal. Update node with result from POV of node.playerJustMoved
             node = node.parentNode
-            #print(state.result())
+            #print(resultados(state))
+            #print(state)
+            #print(state.result)
 
     # Output some information about the tree - can be omitted
     if (verbose): 
@@ -122,10 +137,15 @@ def UCT(rootstate, itermax,board, verbose = False):
     return sorted(rootnode.childNodes, key = lambda c: c.visits)[-1].move # return the move that was most visited        
     
 def resultados(board):
-    if(board.result=="1/2-1/2"):
+    #print(board.result)
+    var=str(board.result())
+    escribir_fichero(var)
+    if(var=="1/2-1/2"):
+        return 1.1
+    elif (var=="1-0"):
         return 0.0
-    elif (board.result=="1-0"):
-        return 0
-    elif  (board.result=="0-1"): 
-        return 1    
-    return False
+    elif  (var=="0-1"): 
+        return 2.0
+    else:
+        return 1.1         
+    
