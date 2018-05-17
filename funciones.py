@@ -2,7 +2,8 @@ import chess
 import os
 import heuristicas as h
 import node as no
-import nodo as n
+import time
+#import nodo as n
 
 
 # las funciones se actualizacion para trabajar con pseudo legal moves generator
@@ -29,7 +30,7 @@ def validar(mov):
 def juego(board):
     # and not board.is_variant_end()
     while(not board.is_game_over()):
-        print(board.is_game_over())
+       # print(board.is_game_over())
         print("turno numero: " + str(board.fullmove_number))
         turno_jugador(board)
         # if not board.is_game_over() and not board.is_variant_end():
@@ -90,11 +91,14 @@ def mensaje_impreso(a1, a2,board):
 def turno_ia(board, llamadas=0, llam=0):
     print("Turno Computador....")
     #mov = mejor_movimiento_(board)
+    '''
     valor, mov, llam = minimax(board, llam)
     valor, mov, llamadas = ab_minimax(board, llamadas)
     print(mov)
-    mensaje_impreso(llamadas, llam,board)
-    m = no.UCT(rootstate = state, itermax = 1000, verbose = False,board=board)
+    mensaje_impreso(llamadas, llam,board)'''
+
+    mov = no.UCT(rootstate = board, itermax = 2000, verbose = False,board=board)
+    #print(mov)
     board.push(mov)
 
 
