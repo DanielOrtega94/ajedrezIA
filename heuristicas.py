@@ -75,11 +75,11 @@ def piece_moves(board, peso):
     if board.turn:
         for i in board.pseudo_legal_moves:
             if i.to_square in square_values:
-                black_points+= square_values[i.to_square]
+                black_points-= square_values[i.to_square]
     else:
         for i in board.pseudo_legal_moves:
             if i.to_square in square_values:
-                black_points-= square_values[i.to_square]            
+                black_points+= square_values[i.to_square]            
     return black_points*peso   
     
 
@@ -115,74 +115,3 @@ def jaque(board,peso):
     return black_points*peso
 
 
-
-#######################################DE AQUI HACIA ABAJO FALTA ARREGLAR
-#mal de diogenes
-'''
-#peso=01
-#cuenta si el jugador esta en jaque o no
-def in_check(board, peso):
-    black_points = 0
-    if board.turn:
-        if not board.is_check():
-            black_points += 1 * peso
-        else:
-            black_points += float("inf")
-    else:
-        if not board.is_check():
-            black_points -= 1 * peso
-        else:
-            black_points += float("-inf")
-    return black_points
-
-
-def piece_moves(board, peso):
-    black_points = 0
-    for i in board.pseudo_legal_moves:
-        if board.turn:
-            if i.to_square in square_values:
-                black_points += square_values[i.to_square]
-        else:
-            if i.to_square in square_values:
-                black_points -= square_values[i.to_square]
-    return black_points*peso   
-'''
-
-
-'''
-def capturar_piezas(board,peso):
-    puntuacion=0
-    blancas,negras=piezas_comidas(board)
-    if board.turn:
-        for key in blancas:
-            puntuacion+=blancas[key]*valores_piezas[key]
-    else:
-        for key in negras:
-            puntuacion-=negras[key]*valores_piezas[key]   
-    return puntuacion*peso
-'''
-'''
-def capturar_piezas(board,peso):
-    puntuacion=0
-    blancas,negras=piezas_comidas(board)
-    for key in blancas:
-        puntuacion+=blancas[key]*valores_piezas[key]   
-    return puntuacion*peso
-'''
-
-#heuristica para comer piezas
-
-
-'''
-#peso= 50
-def capturar_piezas(board,peso):
-    puntuacion=0
-    blancas,negras=piezas_comidas(board)
-    if board.turn:
-        for key in negras:
-            puntuacion+=negras[key]*-valores_piezas[key]   
-    else:    
-        for key in blancas:
-            puntuacion+=blancas[key]*+valores_piezas[key]   
-    return puntuacion*peso
-'''

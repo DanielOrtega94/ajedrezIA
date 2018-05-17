@@ -1,6 +1,7 @@
 import chess
 import os
 import heuristicas as h
+import node as no
 import nodo as n
 
 
@@ -11,16 +12,20 @@ def marcador(board):
     print("capturadas x negras", blancas)
     print("capturadas x blancas", negras)
 
+
 def escribir_fichero(texto):
-	F = open("salida.txt","a")
-	F.write(texto)
-	F.write("\n")
-	F.close() 
+    F = open("salida.txt", "a")
+    F.write(texto)
+    F.write("\n")
+    F.close()
+
 
 def validar(mov):
     return 'a' <= mov[0] <= 'h' and '1' <= mov[1] <= '8' and 'a' <= mov[2] <= 'h' and '1' <= mov[3] <= '8'
 
 # funcion principal:ejecuta el juego hasta que se termine
+
+
 def juego(board):
     # and not board.is_variant_end()
     while(not board.is_game_over()):
@@ -66,19 +71,30 @@ def turno_jugador(board):
         entrada = input()
     return False
 
+
+def mensaje_impreso(a1, a2,board):
+    porcentaje = a1 / a2 * 100
+    palabra1 = "Se han recorrido " + \
+        str(a1) + " de Nodos con alpha-beta en turno " + \
+        str(board.fullmove_number)
+    palabra2 = "Se han recorrido " + \
+        str(a2) + " de Nodos minimax en turno " + str(board.fullmove_number)
+    palabra3 = "Se ha reducido en un " + \
+        str(porcentaje) + "%" + " la busqueda del mov"
+
+    palabra = palabra1 + "\n" + palabra2 + "\n" + palabra3
+    escribir_fichero(palabra)
 #
-def turno_ia(board):
+
+
+def turno_ia(board, llamadas=0, llam=0):
     print("Turno Computador....")
     #mov = mejor_movimiento_(board)
-    # print(mov)
-    
-    llamadas=0
-    valor,mov,llamadas=ab_minimax(board,llamadas)
-    #valor,mov,llamadas=minimax(board,llamadas)
-  
-    palabra= "Se han recorrido" + str(llamadas) + " de Nodos con alpha-beta en jugada " +str(board.fullmove_number)
-    
-    escribir_fichero(palabra)
+    valor, mov, llam = minimax(board, llam)
+    valor, mov, llamadas = ab_minimax(board, llamadas)
+    print(mov)
+    mensaje_impreso(llamadas, llam,board)
+    m = no.UCT(rootstate = state, itermax = 1000, verbose = False,board=board)
     board.push(mov)
 
 
@@ -87,12 +103,8 @@ def valor_heuristicas(board):
     total_points = 0
     total_points += h.material(board, 50)
     total_points += h.pawn_structure(board, 10)
-    #total_points += h.capturar_piezas(board, 50,movimiento)
-    #total_points += h.jaque(board, 50)
-    #total_points += h.piece_moves(board, 50)
-    #total_points += h.in_check(board, 1)
-    #total_points += h.pawn_structure(board, 1)
-    #total_points += h.capturar_piezas(board, 100)
+    total_points += h.jaque(board, 50)
+    total_points += h.piece_moves(board, 50)
     return total_points
 
 
@@ -115,17 +127,16 @@ def greedy(board):
     return mejor_movimiento
 
 
-
-def ab_minimax(board, llamadas,current_depth=0, max_depth=4,alpha=float("-inf"),beta= float("inf")):
+def ab_minimax(board, llamadas, current_depth=0, max_depth=4, alpha=float("-inf"), beta=float("inf")):
     current_depth += 1
     llamadas += 1
-    print(llamadas)
+    # print(llamadas)
 
     if current_depth == max_depth:
-        
+
         # get heuristic of each node
         valor = valor_heuristicas(board)
-        return valor, None,llamadas
+        return valor, None, llamadas
 
     if current_depth % 2 == 0:
         # min player's turn
@@ -134,15 +145,16 @@ def ab_minimax(board, llamadas,current_depth=0, max_depth=4,alpha=float("-inf"),
         best_move = None
         for i in board.legal_moves:
             board.push(i)
-            algo, algo2,llamadas = ab_minimax(board,llamadas,current_depth, max_depth,alpha,beta)
+            algo, algo2, llamadas = ab_minimax(
+                board, llamadas, current_depth, max_depth, alpha, beta)
             board.pop()
-            beta=min(beta,algo)
+            beta = min(beta, algo)
             if algo < best:
                 best = algo
-                best_move = i 
-            if best<alpha:
-                break    
-        return best, best_move,llamadas
+                best_move = i
+            if best < alpha:
+                break
+        return best, best_move, llamadas
     else:
         # max player's turn
         #self.is_turn = True
@@ -150,67 +162,70 @@ def ab_minimax(board, llamadas,current_depth=0, max_depth=4,alpha=float("-inf"),
         best_move = None
         for i in board.legal_moves:
             board.push(i)
-            algo, algo2,llamadas = ab_minimax(board,llamadas,current_depth, max_depth,alpha,beta)
+            algo, algo2, llamadas = ab_minimax(
+                board, llamadas, current_depth, max_depth, alpha, beta)
             board.pop()
-            alpha=max(alpha,algo)
+            alpha = max(alpha, algo)
             if algo > best:
                 best = algo
                 best_move = i
-            if best>beta:
-                break  
-        return (best,best_move,llamadas)
+            if best > beta:
+                break
+        return (best, best_move, llamadas)
 
 
-def minimax(board,llamadas,current_depth=0, max_depth=4):
+def minimax(board, llamadas, current_depth=0, max_depth=4):
     current_depth += 1
     llamadas += 1
-            
 
     if current_depth == max_depth:
         # get heuristic of each node
         valor = valor_heuristicas(board)
-        return valor, None,llamadas
+        return valor, None, llamadas
 
     if current_depth % 2 == 0:
         # min player's turn
         #self.is_turn = False
         best = float('inf')
+        mejor_mov = None
         for i in board.legal_moves:
             board.push(i)
 
-            algo, algo2,llamadas = minimax(board,llamadas,current_depth, max_depth)
+            algo, algo2, llamadas = minimax(
+                board, llamadas, current_depth, max_depth)
             board.pop()
             if algo < best:
                 best = algo
-                best_move = i 
+                mejor_mov = i
 
-        return best, best_move,llamadas
+        return best, mejor_mov, llamadas
     else:
         # max player's turn
         #self.is_turn = True
         best = float('-inf')
-        best_move = None
+        mejor_mov = None
         for i in board.legal_moves:
             board.push(i)
-            
-            algo, algo2,llamadas = minimax(board,llamadas,current_depth, max_depth)
+
+            algo, algo2, llamadas = minimax(
+                board, llamadas, current_depth, max_depth)
             board.pop()
             if algo > best:
                 best = algo
-                best_move = i 
-        return best, best_move,llamadas
-
+                mejor_mov = i
+        return best, mejor_mov, llamadas
 
 
 def genera_hijo(lista):
     mov = []
     for i in lista.legal_moves:
-        #print(i)
+        # print(i)
         lista.push(i)
         aux = n.Nodo(i, 0, lista.fen())
         mov.append(aux)
         lista.pop()
-    #print(mov)    
+    # print(mov)
+
     return mov
 
 '''
