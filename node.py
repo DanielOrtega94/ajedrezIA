@@ -122,7 +122,7 @@ def UCT(rootstate, itermax,board, verbose = False):
         #print("backpropagate")    
         # Backpropagate
         while node != None: # backpropagate from the expanded node and work back to the root node
-            node.Update(resultados(state)) # state is terminal. Update node with result from POV of node.playerJustMoved
+            node.Update(resultados(state)) # state is terminal. Update node with result from PsOV of node.playerJustMoved
             node = node.parentNode
             #print(resultados(state))
             #print(state)
