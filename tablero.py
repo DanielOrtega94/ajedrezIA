@@ -6,12 +6,12 @@ import funciones as f
 
 #instancia el tablero
 board = chess.Board()
+f.juego(board)
 
 #print(board.result())
 # state.is_stalemate() and state.is_insufficient_material() and
 
 #print(board.is_insufficient_material()) 
-f.juego(board)
 
 
 
