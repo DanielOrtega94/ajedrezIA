@@ -101,65 +101,75 @@ def mensaje_impreso(a1, a2, board):
 #
 
 
-def turno_ia(board, llamadas=0, llam=0,algortimo="greedy_p"):
+def turno_ia(board, llamadas=0, llam=0,algoritmo="minimax_o"):
     print("Turno Computador....")
-    '''
-    inicio = time.time()
-    mov = greedy(board)
-    final = time.time()
-    tiempo = final - inicio
-    escribir_fichero_1(str(tiempo))
-    # print("tiempo tomado ", tiempo)
-    # tiempo_g.append(tiempo)
-    '''
-    '''
-    '''
-    inicio = time.time()
-    mov = hacer_movimiento_m(board)
-    final = time.time()
-    tiempo = final - inicio
-    escribir_fichero_1(str(tiempo))
-    # print("tiempo tomado ", tiempo)
-    # tiempo_g.append(tiempo)
+ 
+    if algoritmo =="greedy_p":
+        inicio = time.time()
+        mov = greedy(board)
+        final = time.time()
+        tiempo = final - inicio
+        escribir_fichero_1(str(tiempo))
+        # print("tiempo tomado ", tiempo)
+        # tiempo_g.append(tiempo)
+        board.push(mov)
 
-    '''
-    '''
-   
+    elif algoritmo =="greedy_o":
+        inicio = time.time()
+        mov = hacer_movimiento_m(board)
+        final = time.time()
+        tiempo = final - inicio
+        escribir_fichero_1(str(tiempo))
+        # print("tiempo tomado ", tiempo)
+        # tiempo_g.append(tiempo)
+        board.push(mov)
 
-    inicio = time.time()
-    valor, mov, llam = minimax(board, llam)
-    final = time.time()
-    tiempo = final - inicio
-    escribir_fichero_1(str(tiempo))
-    # tiempo_m.append(tiempo)
-    board.push(mov)
-'''
-    inicio = time.time()
-    valor, mov, llamadas = ab_minimax(board, llamadas)
-    final = time.time()
-    tiempo = final - inicio
-    mensaje_impreso(llamadas, llam, board)
-    escribir_fichero_1(str(tiempo))
-    # tiempo_mab.append(tiempo)
-    # print(mov)
-    # print("tiempo tomado ", tiempo)
+    
+    elif algoritmo =="minimax_p":
 
+        inicio = time.time()
+        valor, mov, llam = minimax(board, llam)
+        final = time.time()
+        tiempo = final - inicio
+        escribir_fichero_1(str(tiempo))
+        # tiempo_m.append(tiempo)
+        board.push(mov)
+
+    elif algoritmo =="ab_minimax_p" or "prueba":    
+        inicio = time.time()
+        valor, mov, llamadas = ab_minimax(board, llamadas)
+        final = time.time()
+        tiempo = final - inicio
+        mensaje_impreso(llamadas, llam, board)
+        escribir_fichero_1(str(tiempo))
+        # tiempo_mab.append(tiempo)
+        # print(mov)
+        # print("tiempo tomado ", tiempo)
+        if algoritmo !="prueba":
+            board.push(mov)
+
+    elif algoritmo =="minimax_o" or "prueba":
+        inicio = time.time()
+        valor, mov, llam = minimax_a_(board, llam)
+        final = time.time()
+        tiempo = final - inicio
+        escribir_fichero_1(str(tiempo))
+        # tiempo_m.append(tiempo)
+        board.push(mov)        
+
+    elif algoritmo =="mcts":
+        inicio = time.time()
+        mov = no.UCT(rootstate=board, itermax=1000, verbose=False, board=board)
+        #mov = no.UCT(rootstate=board, itermax=700, verbose=False, board=board)
+        print(mov)
+        final = time.time()
+        tiempo = final - inicio
+        print("tiempo tomado ", tiempo)
 
     # totales.append(porcentajes)
-    porcentajes = llamadas / llam * 100
-    escribir_fichero_1(str(porcentajes))
-'''
-    #board.push(mov)
-'''
-    inicio = time.time()
-    mov = no.UCT(rootstate=board, itermax=1000, verbose=False, board=board)
-   # mov = no.UCT(rootstate=board, itermax=700, verbose=False, board=board)
-    print(mov)
-    final = time.time()
-    tiempo = final - inicio
-    print("tiempo tomado ", tiempo)
-'''
-
+    if algoritmo =="prueba":
+        porcentajes = llamadas / llam * 100
+        escribir_fichero_1(str(porcentajes))
 
 
 
