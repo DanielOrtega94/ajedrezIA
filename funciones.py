@@ -102,7 +102,7 @@ def mensaje_impreso(a1, a2, board,prueba=False):
 
 
 
-def turno_ia(board, llamadas=0, llam=0,algoritmo="minimax_o"):
+def turno_ia(board, llamadas=0, llam=0,algoritmo="ab_minimax_p"):
     print("Turno Computador....")
  
     if algoritmo =="greedy_p":
