@@ -83,7 +83,7 @@ def choice(movs):
 
 
 
-def UCT(rootstate, itermax,board, verbose = False):
+def UCT(rootstate, itermax,board):
     """ Conduct a UCT search for itermax iterations starting from rootstate.
         Return the best move from the rootstate.
         Assumes 2 alternating players (player 1 starts), with game results in the range [0.0, 1.0]."""
@@ -129,10 +129,8 @@ def UCT(rootstate, itermax,board, verbose = False):
             #print(state.result)
 
     # Output some information about the tree - can be omitted
-    if (verbose): 
-        print(rootnode.TreeToString(0))
-    else: 
-        print(rootnode.ChildrenToString())
+   
+    print(rootnode.ChildrenToString())
 
     return sorted(rootnode.childNodes, key = lambda c: c.visits)[-1].move # return the move that was most visited        
     

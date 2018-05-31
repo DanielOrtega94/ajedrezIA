@@ -1,7 +1,7 @@
 import chess
 import os
 import heuristicas as h
-#import node as no
+import node as no
 import nodo as n
 import time
 import grafico as g
@@ -86,19 +86,20 @@ def turno_jugador(board, prueba=False):
     return False
 
 
-def mensaje_impreso(a1, a2, board):
-    porcentaje = a1 / a2 * 100
-    palabra1 = "Se han recorrido " + \
+def mensaje_impreso(a1, a2, board,prueba=False):
+    if prueba:
+        porcentaje = a1 / a2 * 100
+        palabra1 = "Se han recorrido " + \
         str(a1) + " de Nodos con alpha-beta en turno " + \
         str(board.fullmove_number)
-    palabra2 = "Se han recorrido " + \
+        palabra2 = "Se han recorrido " + \
         str(a2) + " de Nodos minimax en turno " + str(board.fullmove_number)
-    palabra3 = "Se ha reducido en un " + \
+        palabra3 = "Se ha reducido en un " + \
         str(porcentaje) + "%" + " la busqueda del mov"
 
-    palabra = palabra1 + "\n" + palabra2 + "\n" + palabra3
-    escribir_fichero(palabra)
-#
+        palabra = palabra1 + "\n" + palabra2 + "\n" + palabra3
+        escribir_fichero(palabra)
+
 
 
 def turno_ia(board, llamadas=0, llam=0,algoritmo="minimax_o"):
@@ -140,12 +141,12 @@ def turno_ia(board, llamadas=0, llam=0,algoritmo="minimax_o"):
         valor, mov, llamadas = ab_minimax(board, llamadas)
         final = time.time()
         tiempo = final - inicio
-        mensaje_impreso(llamadas, llam, board)
         escribir_fichero_1(str(tiempo))
         # tiempo_mab.append(tiempo)
         # print(mov)
         # print("tiempo tomado ", tiempo)
         if algoritmo !="prueba":
+            mensaje_impreso(llamadas, llam, board)
             board.push(mov)
 
     elif algoritmo =="minimax_o" or "prueba":
@@ -159,8 +160,8 @@ def turno_ia(board, llamadas=0, llam=0,algoritmo="minimax_o"):
 
     elif algoritmo =="mcts":
         inicio = time.time()
-        mov = no.UCT(rootstate=board, itermax=1000, verbose=False, board=board)
-        #mov = no.UCT(rootstate=board, itermax=700, verbose=False, board=board)
+        mov = no.UCT(rootstate=board, itermax=1000,  board=board)
+        #mov = no.UCT(rootstate=board, itermax=700, board=board)
         print(mov)
         final = time.time()
         tiempo = final - inicio
@@ -168,6 +169,7 @@ def turno_ia(board, llamadas=0, llam=0,algoritmo="minimax_o"):
 
     # totales.append(porcentajes)
     if algoritmo =="prueba":
+        print("sadjhfaskdhfa")
         porcentajes = llamadas / llam * 100
         escribir_fichero_1(str(porcentajes))
 
