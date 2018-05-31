@@ -70,7 +70,7 @@ def material(board,peso):
 #da ptos si los cuadros estan disponibles para usarse
 #los signos estan puesto de tal manera que si las blancas se pueden mover ahi
 #me quite y si las negras me sume
-def piece_moves(board, peso):
+def cuadrados(board, peso):
     black_points = 0
     if board.turn:
         for i in board.pseudo_legal_moves:
@@ -85,7 +85,7 @@ def piece_moves(board, peso):
 
 #valora defender a los peones con movimientos a la izquierda
 #y a la derecha
-def pawn_structure(board, peso):
+def estructura_peones(board, peso):
     black_points = 0    
     numero=0
     contador=1

@@ -1,7 +1,7 @@
 import chess
 import os
 import heuristicas as h
-import node as no
+#import node as no
 import nodo as n
 import time
 import grafico as g
@@ -50,7 +50,7 @@ def juego(board):
 
 
 # problema con el turno del jugador si el string no es de tam 4
-def turno_jugador(board, prueba=True):
+def turno_jugador(board, prueba=False):
     print("Turno jugador....")
     
     if prueba:
@@ -101,7 +101,7 @@ def mensaje_impreso(a1, a2, board):
 #
 
 
-def turno_ia(board, llamadas=0, llam=0):
+def turno_ia(board, llamadas=0, llam=0,algortimo="greedy_p"):
     print("Turno Computador....")
     '''
     inicio = time.time()
@@ -167,9 +167,9 @@ def turno_ia(board, llamadas=0, llam=0):
 def valor_heuristicas(board):
     total_points = 0
     total_points += h.material(board, 50)
-    total_points += h.pawn_structure(board, 10)
+    total_points += h.estructura_peones(board, 10)
     total_points += h.jaque(board, 50)
-    total_points += h.piece_moves(board, 50)
+    total_points += h.cuadrados(board, 50)
     return total_points
 
 ##########################################################################
