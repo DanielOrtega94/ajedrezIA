@@ -1,11 +1,10 @@
 import chess
 import os
 import heuristicas as h
-import node as no
+import mcts as no
 import nodo as n
 import time
 import grafico as g
-
 
 totales = []
 tiempo_g = []
@@ -37,13 +36,13 @@ def validar(mov):
     return 'a' <= mov[0] <= 'h' and '1' <= mov[1] <= '8' and 'a' <= mov[2] <= 'h' and '1' <= mov[3] <= '8'
 
 
-def juego(board):
+def juego(board,algoritmo,prueba=False):
     # and not board.is_variant_end()
     while(not board.is_game_over()):
         print("turno numero: " + str(board.fullmove_number))
         turno_jugador(board)
         if not board.is_game_over():
-            turno_ia(board)
+            turno_ia(board,algoritmo="ab_minimax_p")
         else:
             break
     print(board.result)
@@ -55,9 +54,7 @@ def turno_jugador(board, prueba=False):
     
     if prueba:
         board.push(greedy(board))
-        return
-    
-
+        return    
     marcador(board)
     print(board)
     entrada = input()
@@ -102,7 +99,7 @@ def mensaje_impreso(a1, a2, board,prueba=False):
 
 
 
-def turno_ia(board, llamadas=0, llam=0,algoritmo="ab_minimax_p"):
+def turno_ia(board,algoritmo, llamadas=0, llam=0):
     print("Turno Computador....")
  
     if algoritmo =="greedy_p":
@@ -167,11 +164,10 @@ def turno_ia(board, llamadas=0, llam=0,algoritmo="ab_minimax_p"):
         tiempo = final - inicio
         print("tiempo tomado ", tiempo)
 
-    # totales.append(porcentajes)
     if algoritmo =="prueba":
-        print("sadjhfaskdhfa")
         porcentajes = llamadas / llam * 100
         escribir_fichero_1(str(porcentajes))
+        totales.append(porcentajes)
 
 
 

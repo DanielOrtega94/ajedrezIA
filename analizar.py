@@ -94,4 +94,4 @@ tiempo_1(minimax, minimax_a)
 
 # print(greedy)
 # print(minimax)
-#print(porcentaje)
+# print(porcentaje)

@@ -2,14 +2,6 @@ import chess
 
 
 class Nodo(object):
-    '''def __init__(self, movimiento=None,valor=None,hijos=None,padre=None):
-                    self.padre=padre
-                    self.movimiento = movimiento
-                    self.valor = valor
-                    self.hijos = []
-                    self.profundidad=0
-                    if padre:
-                        self.profundidad = padre.profundidad + 1'''
 
     def __init__(self, movimiento=None, valor=None, tablero=None):
         self.tablero = tablero
