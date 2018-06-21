@@ -1,21 +1,15 @@
 import chess
 
-
 class Nodo(object):
-
     def __init__(self, movimiento=None, valor=None, tablero=None):
         self.tablero = tablero
         self.movimiento = movimiento
         self.valor = valor
 
-
-
 def imprime_hijos(nodo):
     for n in nodo.hijos:
         print(str(n.padre.movimiento) + " " + str(n.movimiento) +
               " " + str(n.valor) + " " + str(n.profundidad))
-
-
 
 def poblar_hijos(lista, padre):
     tam = len(padre.hijos)
@@ -37,4 +31,3 @@ def genera_hijo(lista):
         lista.pop()
     # print(mov)
     return mov
-

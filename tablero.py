@@ -1,17 +1,21 @@
 import chess
 import funciones as f
 
+algoritmos={
+	1:"greedy_p",
+	2:"greedy_o",
+	3:"minimax_p",
+	4:"ab_minimax_p",
+	5:"minimax_o",
+	6:"mcts",
+}
+
 print("seleecione un algortimo para ejecutar la IA")
-print("greedy_p")
-print("greedy_o")
-print("minimax_p")
-print("ab_minimax_p")
-print("minimax_o")
-print("mcts")
+for element in algoritmos:
+	print(element,algoritmos[element])
 
-algoritmo= input()
+
+clave= int(input())
 board = chess.Board()
-f.juego(board,algoritmo)
-
-
-#debo realizar las prubeas para el mcts
+print(algoritmos[clave])
+f.juego(board,algoritmos[clave])

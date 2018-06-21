@@ -1,33 +1,39 @@
+# import
 import chess
-import os
-import heuristicas as h
+import algoritmos as algo
 import mcts as no
+import heuristicas as h
 import nodo as n
 import time
-import grafico as g
 
+
+###########varibales globales################
 totales = []
 tiempo_g = []
 tiempo_m = []
 tiempo_mab = []
+piezas_comidas_blancas, piezas_actuales_negras = {}, {}
 
 
-def escribir_fichero(texto):
-    F = open("salida.txt", "a")
+###########################funciones####################
+def escribir_fichero(texto, archivo):
+    F = open(archivo, "a")
     F.write(texto)
     F.write("\n")
     F.close()
 
 
-def escribir_fichero_1(texto):
-    F = open("tiempos.txt", "a")
-    F.write(texto)
-    F.write("\n")
-    F.close()
+def piezas_comidas(board):
+    piezas_actuales_blancas, piezas_actuales_negras = h.contar_piezas(board)
+    piezas_comidas_blancas = {key: h.totales_blancas[
+        key] - piezas_actuales_blancas.get(key, 0) for key in h.totales_blancas}
+    piezas_comidas_negras = {key: h.totales_negras[
+        key] - piezas_actuales_negras.get(key, 0) for key in h.totales_negras}
+    return (piezas_comidas_blancas, piezas_comidas_negras)
 
 
 def marcador(board):
-    blancas, negras = h.piezas_comidas(board)
+    blancas, negras = piezas_comidas(board)
     print("capturadas x negras", blancas)
     print("capturadas x blancas", negras)
 
@@ -36,25 +42,39 @@ def validar(mov):
     return 'a' <= mov[0] <= 'h' and '1' <= mov[1] <= '8' and 'a' <= mov[2] <= 'h' and '1' <= mov[3] <= '8'
 
 
-def juego(board,algoritmo,prueba=False):
-    # and not board.is_variant_end()
+def mensaje_impreso(a1, a2, board, prueba=False):
+    if prueba:
+        porcentaje = a1 / a2 * 100
+        palabra1 = "Se han recorrido " + \
+            str(a1) + " de Nodos con alpha-beta en turno " + \
+            str(board.fullmove_number)
+        palabra2 = "Se han recorrido " + \
+            str(a2) + " de Nodos minimax en turno " + \
+            str(board.fullmove_number)
+        palabra3 = "Se ha reducido en un " + \
+            str(porcentaje) + "%" + " la busqueda del mov"
+        palabra = palabra1 + "\n" + palabra2 + "\n" + palabra3
+        escribir_fichero(palabra, "salida.txt")
+
+
+def juego(board, algoritmo, prueba=False):
+
     while(not board.is_game_over()):
         print("turno numero: " + str(board.fullmove_number))
-        turno_jugador(board)
+        turno_jugador(board, prueba)
         if not board.is_game_over():
-            turno_ia(board,algoritmo="ab_minimax_p")
+            turno_ia(board, algoritmo, prueba)
         else:
             break
     print(board.result)
 
 
 # problema con el turno del jugador si el string no es de tam 4
-def turno_jugador(board, prueba=False):
+def turno_jugador(board, prueba):
     print("Turno jugador....")
-    
     if prueba:
-        board.push(greedy(board))
-        return    
+        board.push(algo.greedy(board))
+        return
     marcador(board)
     print(board)
     entrada = input()
@@ -62,11 +82,6 @@ def turno_jugador(board, prueba=False):
 
         if entrada == 'v':
             print(board)
-
-        elif entrada == 'r':
-            print("Reiniciando Juego")
-            os.system('cls')
-            board.reset()
 
         elif entrada == 'h' or entrada == 'H':
             print("Mov disponibles" + str(board.legal_moves.count()))
@@ -83,245 +98,172 @@ def turno_jugador(board, prueba=False):
     return False
 
 
-def mensaje_impreso(a1, a2, board,prueba=False):
-    if prueba:
-        porcentaje = a1 / a2 * 100
-        palabra1 = "Se han recorrido " + \
-        str(a1) + " de Nodos con alpha-beta en turno " + \
-        str(board.fullmove_number)
-        palabra2 = "Se han recorrido " + \
-        str(a2) + " de Nodos minimax en turno " + str(board.fullmove_number)
-        palabra3 = "Se ha reducido en un " + \
-        str(porcentaje) + "%" + " la busqueda del mov"
-
-        palabra = palabra1 + "\n" + palabra2 + "\n" + palabra3
-        escribir_fichero(palabra)
-
-
-
-def turno_ia(board,algoritmo, llamadas=0, llam=0):
+def turno_ia(board, algoritmo, llamadas=0, llam=0, prueba=True):
     print("Turno Computador....")
- 
-    if algoritmo =="greedy_p":
+
+    if algoritmo == "greedy_p":
+        print("greedy_p")
         inicio = time.time()
-        mov = greedy(board)
+        mov = algo.greedy(board)
         final = time.time()
         tiempo = final - inicio
-        escribir_fichero_1(str(tiempo))
+        escribir_fichero(str(tiempo), "tiempos.txt")
         # print("tiempo tomado ", tiempo)
         # tiempo_g.append(tiempo)
         board.push(mov)
 
-    elif algoritmo =="greedy_o":
+    elif algoritmo == "greedy_o":
+        print("greedy_o")
         inicio = time.time()
-        mov = hacer_movimiento_m(board)
+        mov = algo.hacer_movimiento_m(board)
         final = time.time()
         tiempo = final - inicio
-        escribir_fichero_1(str(tiempo))
+        escribir_fichero(str(tiempo), "tiempos.txt")
         # print("tiempo tomado ", tiempo)
         # tiempo_g.append(tiempo)
         board.push(mov)
 
-    
-    elif algoritmo =="minimax_p":
+    elif algoritmo == "minimax_p":
+        if not prueba:
+            print("minimax_p")
+            inicio = time.time()
+            valor, mov, llam = algo.minimax(board, llam)
+            final = time.time()
+            tiempo = final - inicio
+            escribir_fichero(str(tiempo), "tiempos.txt")
+            # tiempo_m.append(tiempo)
+            board.push(mov)
+        else:
+            print(prueba)
+            print("minimax_p")
+            inicio = time.time()
+            valor, mov, llam = algo.minimax(board, llam)
+            final = time.time()
+            tiempo = final - inicio
+            escribir_fichero(str(4) + ' ' + str(tiempo), "tiempos.txt")
+            # tiempo_m.append(tiempo)
 
-        inicio = time.time()
-        valor, mov, llam = minimax(board, llam)
-        final = time.time()
-        tiempo = final - inicio
-        escribir_fichero_1(str(tiempo))
-        # tiempo_m.append(tiempo)
-        board.push(mov)
+            print("minimax_p")
+            inicio = time.time()
+            valor, mov, llam = algo.minimax(board, llam, max_depth=5)
+            final = time.time()
+            tiempo = final - inicio
+            escribir_fichero(str(5) + ' ' + str(tiempo), "tiempos.txt")
+            # tiempo_m.append(tiempo)
 
-    elif algoritmo =="ab_minimax_p" or "prueba":    
-        inicio = time.time()
-        valor, mov, llamadas = ab_minimax(board, llamadas)
-        final = time.time()
-        tiempo = final - inicio
-        escribir_fichero_1(str(tiempo))
-        # tiempo_mab.append(tiempo)
-        # print(mov)
-        # print("tiempo tomado ", tiempo)
-        if algoritmo !="prueba":
-            mensaje_impreso(llamadas, llam, board)
+            print("minimax_p")
+            inicio = time.time()
+            valor, mov, llam = algo.minimax(board, llam, max_depth=6)
+            final = time.time()
+            tiempo = final - inicio
+            escribir_fichero(str(6) + ' ' + str(tiempo), "tiempos.txt")
+            # tiempo_m.append(tiempo)
+
+            print("minimax_p")
+            inicio = time.time()
+            valor, mov, llam = algo.minimax(board, llam, max_depth=7)
+            final = time.time()
+            tiempo = final - inicio
+            escribir_fichero(str(7) + ' ' + str(tiempo), "tiempos.txt")
+            # tiempo_m.append(tiempo)
+
             board.push(mov)
 
-    elif algoritmo =="minimax_o" or "prueba":
+    elif algoritmo == "ab_minimax_p":
+        if not prueba:
+            print("ab_minimax_p")
+            inicio = time.time()
+            valor, mov, llamadas = algo.ab_minimax(board, llamadas)
+            final = time.time()
+            tiempo = final - inicio
+            escribir_fichero(str(tiempo), "tiempos.txt")
+           # tiempo_mab.append(tiempo)
+            mensaje_impreso(llamadas, llam, board)
+            board.push(mov)
+        else:
+            print(prueba)
+            print("ab_minimax_p")
+            inicio = time.time()
+            valor, mov, llamadas = algo.minimax(board, llamadas)
+            final = time.time()
+            tiempo = final - inicio
+            escribir_fichero(str(4) + ' ' + str(tiempo), "tiempos.txt")
+            # tiempo_m.append(tiempo)
+
+            print("ab_minimax_p")
+            inicio = time.time()
+            valor, mov, llamadas = algo.minimax(board, llamadas, max_depth=5)
+            final = time.time()
+            tiempo = final - inicio
+            escribir_fichero(str(5) + ' ' + str(tiempo), "tiempos.txt")
+            # tiempo_m.append(tiempo)
+
+            print("ab_minimax_p")
+            inicio = time.time()
+            valor, mov, llamadas = algo.minimax(board, llamadas, max_depth=6)
+            final = time.time()
+            tiempo = final - inicio
+            escribir_fichero(str(6) + ' ' + str(tiempo), "tiempos.txt")
+            # tiempo_m.append(tiempo)
+
+            print("ab_minimax_p")
+            inicio = time.time()
+            valor, mov, llamadas = algo.minimax(board, llamadas, max_depth=6)
+            final = time.time()
+            tiempo = final - inicio
+            escribir_fichero(str(7) + ' ' + str(tiempo), "tiempos.txt")
+
+            board.push(mov)
+
+    elif algoritmo == "minimax_o":
+        print("minimax_o")
         inicio = time.time()
-        valor, mov, llam = minimax_a_(board, llam)
+        valor, mov, llam = algo.minimax_a_(board, llam)
         final = time.time()
         tiempo = final - inicio
-        escribir_fichero_1(str(tiempo))
-        # tiempo_m.append(tiempo)
-        board.push(mov)        
+        escribir_fichero(str(tiempo), "tiempos.txt")
+        # #tiempo_m.append(tiempo)
+        board.push(mov)
 
-    elif algoritmo =="mcts":
-        inicio = time.time()
-        mov = no.UCT(rootstate=board, itermax=1000,  board=board)
-        #mov = no.UCT(rootstate=board, itermax=700, board=board)
-        print(mov)
-        final = time.time()
-        tiempo = final - inicio
-        print("tiempo tomado ", tiempo)
+    elif algoritmo == "mcts":
+        if not prueba:
+            print("mcts")
+            inicio = time.time()
+            mov = no.UCT(rootstate=board, itermax=700, board=board)
+            final = time.time()
+            tiempo = final - inicio
+            escribir_fichero(str(tiempo), "tiempos.txt")
+            board.push(mov)
+        else:
+            print("mcts")
+            inicio = time.time()
+            mov = no.UCT(rootstate=board, itermax=500, board=board)
+            final = time.time()
+            tiempo = final - inicio
+            escribir_fichero(str(tiempo), "tiempos.txt")
 
-    if algoritmo =="prueba":
+            print("mcts")
+            inicio = time.time()
+            mov = no.UCT(rootstate=board, itermax=750, board=board)
+            final = time.time()
+            tiempo = final - inicio
+            escribir_fichero(str(tiempo), "tiempos.txt")
+
+            print("mcts")
+            inicio = time.time()
+            mov = no.UCT(rootstate=board, itermax=1000, board=board)
+            final = time.time()
+            tiempo = final - inicio
+            escribir_fichero(str(tiempo), "tiempos.txt")
+
+            print("mcts")
+            inicio = time.time()
+            mov = no.UCT(rootstate=board, itermax=1250, board=board)
+            final = time.time()
+            tiempo = final - inicio
+            escribir_fichero(str(tiempo), "tiempos.txt")
+
+    if algoritmo == "prueba":
         porcentajes = llamadas / llam * 100
-        escribir_fichero_1(str(porcentajes))
+        escribir_fichero(str(porcentajes), "tiempos.txt")
         totales.append(porcentajes)
-
-
-
-# emula w*h+w*h.....
-def valor_heuristicas(board):
-    total_points = 0
-    total_points += h.material(board, 50)
-    total_points += h.estructura_peones(board, 10)
-    total_points += h.jaque(board, 50)
-    total_points += h.cuadrados(board, 50)
-    return total_points
-
-##########################################################################
-
-
-def greedy(board):
-    mejor_movimiento = 0
-    mejor_valor = -999
-    for i in board.legal_moves:
-        # print("Movimiento pusheado: " + str(i) +
-        #     " : " + str(board.piece_at(i.from_square)))
-        board.push(i)
-        # print(board.is_capture(i))
-        valores = valor_heuristicas(board)
-        # print(valores)
-
-        if valores > mejor_valor:
-            mejor_movimiento = i
-            mejor_valor = valores
-
-        board.pop()
-    return mejor_movimiento
-
-##########################################################################
-
-
-def minimax(board, llamadas, current_depth=0, max_depth=4):
-    current_depth += 1
-    llamadas += 1
-
-    if current_depth == max_depth:
-        # valor heuristico
-        valor = valor_heuristicas(board)
-        return valor, None, llamadas
-
-    if current_depth % 2 == 0:
-        # Turno jugador minimo
-        best = float('inf')
-        mejor_mov = None
-        for i in board.legal_moves:
-            board.push(i)
-            algo, algo2, llamadas = minimax(
-                board, llamadas, current_depth, max_depth)
-            board.pop()
-            if algo < best:
-                best = algo
-                mejor_mov = i
-
-        return best, mejor_mov, llamadas
-    else:
-        # Turno jugador maximo
-        best = float('-inf')
-        mejor_mov = None
-        for i in board.legal_moves:
-            board.push(i)
-            algo, algo2, llamadas = minimax(
-                board, llamadas, current_depth, max_depth)
-            board.pop()
-            if algo > best:
-                best = algo
-                mejor_mov = i
-        return best, mejor_mov, llamadas
-
-
-def ab_minimax(board, llamadas, current_depth=0, max_depth=4, alpha=float("-inf"), beta=float("inf")):
-    current_depth += 1
-    llamadas += 1
-
-    if current_depth == max_depth:
-        # Obtiene valor heuristicas
-        valor = valor_heuristicas(board)
-        return valor, None, llamadas
-
-    if current_depth % 2 == 0:
-        # Turno jugador minimo
-        best = float('inf')
-        best_move = None
-        for i in board.legal_moves:
-            board.push(i)
-            algo, algo2, llamadas = ab_minimax(
-                board, llamadas, current_depth, max_depth, alpha, beta)
-            board.pop()
-            beta = min(beta, algo)
-            if algo < best:
-                best = algo
-                best_move = i
-            if best < alpha:
-                break
-        return best, best_move, llamadas
-    else:
-         # Turno jugador maximo
-        best = float('-inf')
-        best_move = None
-        for i in board.legal_moves:
-            board.push(i)
-            algo, algo2, llamadas = ab_minimax(
-                board, llamadas, current_depth, max_depth, alpha, beta)
-            board.pop()
-            alpha = max(alpha, algo)
-            if algo > best:
-                best = algo
-                best_move = i
-            if best > beta:
-                break
-        return (best, best_move, llamadas)
-
-
-def hacer_movimiento_m(board):
-    posibles = genera_hijo(board)
-    for mov in posibles:
-        mov.valor = minimax_a_(mov, board)
-    mejor_mov = posibles[0]
-    for mov in posibles:
-        if mov.valor > mejor_mov.valor:
-            mejor_mov = mov
-    return mejor_mov.movimiento
-
-def minimax_a_(node, board, current_depth=0, max_depth=4):
-    current_depth += 1
-    if current_depth == max_depth:
-        # get heuristic of each node
-        node.valor = valor_heuristicas(board)
-        return node.valor
-
-    if current_depth % 2 == 0:
-        # min player's turn
-        # self.is_turn = False
-        return min([minimax_a_(child_node,board, current_depth) for child_node in genera_hijo(board)])
-
-    else:
-        # max player's turn
-        # self.is_turn = True
-        return max([minimax_a_(child_node, board,current_depth) for child_node in genera_hijo(board)])
-
-
-def genera_hijo(lista):
-    mov = []
-    for i in lista.legal_moves:
-        # print(i)
-        lista.push(i)
-        aux = n.Nodo(i, 0, lista.fen())
-        mov.append(aux)
-        lista.pop()
-    # print(mov)
-    return mov
-
-

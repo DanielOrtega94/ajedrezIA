@@ -1,4 +1,12 @@
 import matplotlib.pyplot as plt
+import ast
+import numpy as np
+
+greedy = []
+minimax = []
+ab_minimax = []
+minimax_a = []
+porcentaje = []
 
 
 def escribir_fichero(texto):
@@ -8,12 +16,11 @@ def escribir_fichero(texto):
 
 
 def array_fichero(array):
-    texto=""
+    texto = ""
     for i in array:
-        texto+=str(i) + " "
+        texto += str(i) + " "
         escribir_fichero(texto)
     escribir_fichero("\n")
-
 
 
 def porcentaje(array):
@@ -28,7 +35,8 @@ def porcentaje(array):
     plt.show()
     plt.savefig('porcentajepoda.png')
 
-def asintotico(greedy,minimax,abminimax):
+
+def asintotico(greedy, minimax, abminimax):
     array_fichero(greedy)
     array_fichero(minimax)
     array_fichero(abminimax)
@@ -41,3 +49,195 @@ def asintotico(greedy,minimax,abminimax):
     plt.legend(loc='best')
     plt.show()
     plt.savefig('tiempoasintotico.png')
+
+
+def grafico(array, mediana):
+    texto = "mediana " + str(mediana) + "%"
+    contador = 0
+    # for i in array:
+    #    plt.text(contador,i,str(i),fontsize=10)
+    #    contador+=1
+
+    plt.plot(array,  "-o")
+    plt.xlabel('Turno')
+    plt.ylabel('Porcentaje Poda')
+    plt.title('Poda')
+    plt.grid()
+    plt.text(10, 40, texto, fontsize=12)
+    plt.legend(loc='best')
+    plt.show()
+    plt.savefig('porcentajepoda.png')
+
+
+def tiempo(greedy, mini, ab):
+    plt.plot(greedy, marker='x', linestyle=':', color='b', label="greedy")
+    plt.plot(mini,  marker='*', linestyle='-', color='g', label="minimax")
+    plt.plot(ab,  marker='o', linestyle='--', color='r', label="ab_minimax")
+    plt.xlabel('Turno')
+    plt.ylabel('segundos')
+    plt.title('tiempos')
+    plt.grid()
+    plt.legend(loc='best')
+    plt.show()
+
+
+def tiempo_1(mini, ab):
+    plt.plot(mini, marker='x', linestyle=':', color='b', label="minimax")
+    plt.plot(ab,  marker='*', linestyle='-', color='g', label="minimax_arbol")
+    plt.xlabel('Turno')
+    plt.ylabel('segundos')
+    plt.title('tiempos')
+    plt.grid()
+    plt.legend(loc='best')
+    plt.show()
+
+
+def graficar():
+    f = open("tiempos.txt")
+    linea = f.readline()
+    flag = True
+
+'''
+while linea != "":
+    try:
+        greedy.append(float(linea))  # greedy
+    except ValueError:
+        break
+    linea = f.readline()
+    minimax.append(float(linea))  # minmax
+    linea = f.readline()
+    ab_minimax.append(float(linea))  # ab
+    linea = f.readline()
+    porcentaje.append(float(linea))  # %
+    linea = f.readline()
+'''
+
+# print(len(porcentaje))
+#media = np.median(porcentaje)
+# print(media)
+# grafico(porcentaje,media)
+# tiempo(minimax,ab_minimax)
+'''
+    while linea != "":
+        try:
+            minimax.append(float(linea))  # greedy
+        except ValueError:
+            break
+        linea = f.readline()
+        minimax_a.append(float(linea))  # ab
+        linea = f.readline()
+
+    f.close()
+    tiempo_1(minimax, minimax_a)
+'''
+def profundidades_mini():
+    cuatro = 2.118420124053955
+    cinco = 49.9095823764801
+    seis = 1210.511376619339
+    # siete=
+    posiciones=[0,1,2]
+    plt.bar(posiciones[0],cuatro)
+    plt.bar(posiciones[1],cinco)
+    plt.bar(posiciones[2],seis)
+    plt.text(posiciones[0],cuatro, str(round(cuatro,1)), fontsize=6)
+    plt.text(posiciones[1],cinco, str(round(cinco,1)), fontsize=6)
+    plt.text(posiciones[2],seis, str(round(seis,1)), fontsize=6)
+    #plt.plot(cuatro, marker='x', linestyle=':', color='b', label="cuatro")
+    #plt.plot(cinco,  marker='*', linestyle='-', color='r', label="cinco")
+    #plt.plot(seis,  marker='*', linestyle='-', color='g', label="seis")
+    #plt.plot(siete,  marker='*', linestyle='-', color='g', label="siete")
+    plt.xlabel('Profundidades')
+    plt.xticks(posiciones,["4","5","6"] , rotation = 45)
+    plt.ylabel('segundos')
+    plt.title('Tiempos Profundidades Minimax')
+    plt.grid()
+
+    plt.show()
+
+
+def profundidades_ab():
+    cuatro = 1.8808352947235107
+    cinco = 47.39628863334656
+    seis = 1117.0138058662415
+    # siete=
+    posiciones=[0,1,2]
+    plt.bar(posiciones[0],cuatro)
+    plt.bar(posiciones[1],cinco)
+    plt.bar(posiciones[2],seis)
+    plt.text(posiciones[0],cuatro, str(round(cuatro,1)), fontsize=6)
+    plt.text(posiciones[1],cinco, str(round(cinco,1)), fontsize=6)
+    plt.text(posiciones[2],seis, str(round(seis,1)), fontsize=6)
+
+    #plt.plot(cuatro, marker='x', linestyle=':', color='b', label="cuatro")
+    #plt.plot(cinco,  marker='*', linestyle='-', color='r', label="cinco")
+    #plt.plot(seis,  marker='*', linestyle='-', color='g', label="seis")
+    #plt.plot(siete,  marker='*', linestyle='-', color='g', label="siete")
+    plt.xlabel('Profundidades')
+    plt.xticks(posiciones,["4","5","6"] , rotation = 45)
+    plt.ylabel('segundos')
+    plt.title('Tiempos Profundidades Minimax_AB')
+    plt.grid()
+
+    plt.show()
+
+def profundidades_mcts():
+    cuatro = 39.47816014289856
+    cinco = 56.893070936203
+    seis = 479.43767833709717
+    siete= 129.09021472930908
+
+    posiciones=[0,1,2,3]
+    plt.bar(posiciones[0],cuatro)
+    plt.bar(posiciones[1],cinco)
+    plt.bar(posiciones[2],seis)
+    plt.bar(posiciones[3],siete)
+    plt.text(posiciones[0],cuatro, str(round(cuatro,1)), fontsize=6)
+    plt.text(posiciones[1],cinco, str(round(cinco,1)), fontsize=6)
+    plt.text(posiciones[2],seis, str(round(seis,1)), fontsize=6)
+    plt.text(posiciones[3],siete, str(round(seis,1)), fontsize=6)
+    #plt.plot(cuatro, marker='x', linestyle=':', color='b', label="cuatro")
+    #plt.plot(cinco,  marker='*', linestyle='-', color='r', label="cinco")
+    #plt.plot(seis,  marker='*', linestyle='-', color='g', label="seis")
+    #plt.plot(siete,  marker='*', linestyle='-', color='g', label="siete")
+    plt.xlabel('iteraciones')
+    plt.xticks(posiciones,["500","750","1000","1250"] , rotation = 45)
+    plt.ylabel('segundos')
+    plt.title('Tiempos Profundidades MCTS')
+    plt.grid()
+
+    plt.show()    
+
+
+def comparativa():
+    cuatro_a = 1.8808352947235107
+    cinco_a = 45.39628863334656
+    seis_a = 1110.0138058662415
+
+    cuatro = 2.118420124053955
+    cinco = 49.9095823764801
+    seis = 1210.511376619339
+  
+    posiciones=[0,1,2]
+    plt.bar(posiciones[0],cuatro)
+    plt.bar(posiciones[1],cinco)
+    plt.bar(posiciones[2],seis)
+    plt.bar(posiciones[0],cuatro_a)
+    plt.bar(posiciones[1],cinco_a)
+    plt.bar(posiciones[2],seis_a)
+
+    #plt.plot(cuatro, marker='x', linestyle=':', color='b', label="cuatro")
+    #plt.plot(cinco,  marker='*', linestyle='-', color='r', label="cinco")
+    #plt.plot(seis,  marker='*', linestyle='-', color='g', label="seis")
+    #plt.plot(siete,  marker='*', linestyle='-', color='g', label="siete")
+    plt.xlabel('Profundidades')
+    plt.xticks(posiciones,["4","5","6"] , rotation = 45)
+    plt.ylabel('segundos')
+    plt.title('Comparativa Tiempos y profundidades')
+    plt.grid()
+
+    plt.show()
+
+profundidades_mini()
+profundidades_ab()
+comparativa()
+profundidades_mcts()
