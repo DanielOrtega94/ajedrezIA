@@ -5,7 +5,7 @@ import copy
 
 class Node:
 
-    def __init__(self, movimiento=None, parent=None, state=None, board=None):
+    def __init__(self, movimiento=None, parent=None, estado=None, board=None):
         self.movimiento = movimiento
         self.nodoPadre = parent
         self.nodosHijos = []
@@ -14,14 +14,14 @@ class Node:
         self.movimientosNoIntentados = list(board.legal_moves)
         self.turnoJugador = board.turn
 
+        #retonar el mayor
     def UCTseleccionarHijo(self):
         s = sorted(self.nodosHijos, key=lambda c: c.victorias / c.visitas +
                    math.sqrt(2 * math.log(self.visitas) / c.visitas))[-1]
         return s
 
     def AnadirHijo(self, m, s, board):
-
-        n = Node(movimiento=m, parent=self, state=s, board=board)
+        n = Node(movimiento=m, parent=self, estado=s, board=board)
         self.movimientosNoIntentados.remove(m)
         self.nodosHijos.append(n)
         return n
@@ -30,37 +30,34 @@ class Node:
         self.visitas += 1
         self.victorias += result
 
-    def __repr__(self):
-        return "[M:" + str(self.movimiento) + " W/V:" + str(self.victorias) + "/" + str(self.visitas) + " U:" + str(self.movimientosNoIntentados) + "]"
-
-def UCT(rootstate, itermax, board):
-    rootnode = Node(state=rootstate, board=board)
+def UCT(estadobase, itermax, board):
+    rootnode = Node(estado=estadobase, board=board)
 
     for i in range(itermax):
         node = rootnode
-        state = copy.deepcopy(rootstate)
+        #estado es una copia del tablero
+        estado = copy.deepcopy(estadobase)
 
         # Select
         while node.movimientosNoIntentados == [] and node.nodosHijos != []:
             node = node.UCTseleccionarHijo()
-            state.push(node.movimiento)
+            estado.push(node.movimiento)
 
         # Expand
         if node.movimientosNoIntentados != []:
             m = random.choice(node.movimientosNoIntentados)
-            state.push(m)
-            node = node.AnadirHijo(m, state, board)
+            estado.push(m)
+            node = node.AnadirHijo(m, estado, board)
 
         # rollout
-        while not state.is_game_over()and list(state.legal_moves) != []:  # while state is non-terminal
-            state.push(random.choice(list(state.legal_moves)))
+        while not estado.is_game_over()and list(estado.legal_moves) != []:  # while estado is non-terminal
+            estado.push(random.choice(list(estado.legal_moves)))
 
         # Backpropagate
         while node != None:
-            node.Actualizar(resultados(state))
+            node.Actualizar(resultados(estado))
             node = node.nodoPadre
 
-   
     return sorted(rootnode.nodosHijos, key=lambda c: c.visitas)[-1].movimiento
 
 

@@ -241,7 +241,7 @@ def turno_ia(board, algoritmo, llamadas=0, llam=0, prueba=False):
         if not prueba:
             print("mcts")
             inicio = time.time()
-            mov = no.UCT(rootstate=board, itermax=700, board=board)
+            mov = no.UCT(estadobase=board, itermax=700, board=board)
             final = time.time()
             tiempo = final - inicio
             escribir_fichero(str(tiempo), "tiempos.txt")
@@ -251,28 +251,28 @@ def turno_ia(board, algoritmo, llamadas=0, llam=0, prueba=False):
         else:
             print("mcts")
             inicio = time.time()
-            mov = no.UCT(rootstate=board, itermax=500, board=board)
+            mov = no.UCT(estadobase=board, itermax=500, board=board)
             final = time.time()
             tiempo = final - inicio
             escribir_fichero(str(tiempo), "tiempos.txt")
 
             print("mcts")
             inicio = time.time()
-            mov = no.UCT(rootstate=board, itermax=750, board=board)
+            mov = no.UCT(estadobase=board, itermax=750, board=board)
             final = time.time()
             tiempo = final - inicio
             escribir_fichero(str(tiempo), "tiempos.txt")
 
             print("mcts")
             inicio = time.time()
-            mov = no.UCT(rootstate=board, itermax=1000, board=board)
+            mov = no.UCT(estadobase=board, itermax=1000, board=board)
             final = time.time()
             tiempo = final - inicio
             escribir_fichero(str(tiempo), "tiempos.txt")
 
             print("mcts")
             inicio = time.time()
-            mov = no.UCT(rootstate=board, itermax=1250, board=board)
+            mov = no.UCT(estadobase=board, itermax=1250, board=board)
             final = time.time()
             tiempo = final - inicio
             escribir_fichero(str(tiempo), "tiempos.txt")
