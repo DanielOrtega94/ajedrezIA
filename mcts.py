@@ -3,14 +3,6 @@ import chess
 import random
 import copy
 
-
-def escribir_fichero(texto):
-    F = open("ganadas.txt", "a")
-    F.write(texto)
-    F.write("\n")
-    F.close()
-
-
 class Node:
 
     def __init__(self, move=None, parent=None, state=None, board=None):
@@ -40,24 +32,6 @@ class Node:
 
     def __repr__(self):
         return "[M:" + str(self.move) + " W/V:" + str(self.wins) + "/" + str(self.visits) + " U:" + str(self.untriedMoves) + "]"
-
-    def TreeToString(self, indent):
-        s = self.IndentString(indent) + str(self)
-        for c in self.childNodes:
-            s += c.TreeToString(indent + 1)
-        return s
-
-    def IndentString(self, indent):
-        s = "\n"
-        for i in range(1, indent + 1):
-            s += "| "
-        return s
-
-    def ChildrenToString(self):
-        s = ""
-        for c in self.childNodes:
-            s += str(c) + "\n"
-        return s
 
 
 def choice(movs):
@@ -97,13 +71,12 @@ def UCT(rootstate, itermax, board):
             node.Update(resultados(state))
             node = node.parentNode
 
-    print(rootnode.ChildrenToString())
+    #print(rootnode.ChildrenToString())
     return sorted(rootnode.childNodes, key=lambda c: c.visits)[-1].move
 
 
 def resultados(board):
     var = str(board.result())
-    escribir_fichero(var)
     if(var == "1/2-1/2"):
         return 1.1
     elif (var == "1-0"):

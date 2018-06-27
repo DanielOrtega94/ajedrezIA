@@ -98,7 +98,7 @@ def turno_jugador(board, prueba):
     return False
 
 
-def turno_ia(board, algoritmo, llamadas=0, llam=0, prueba=True):
+def turno_ia(board, algoritmo, llamadas=0, llam=0, prueba=False):
     print("Turno Computador....")
 
     if algoritmo == "greedy_p":
