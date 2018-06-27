@@ -5,33 +5,33 @@ import copy
 
 class Node:
 
-    def __init__(self, move=None, parent=None, state=None, board=None):
-        self.move = move
-        self.parentNode = parent
-        self.childNodes = []
-        self.wins = 0
-        self.visits = 0
-        self.untriedMoves = list(board.legal_moves)
-        self.playerJustMoved = board.turn
+    def __init__(self, movimiento=None, parent=None, state=None, board=None):
+        self.movimiento = movimiento
+        self.nodoPadre = parent
+        self.nodosHijos = []
+        self.victorias = 0
+        self.visitas = 0
+        self.movimientosNoIntentados = list(board.legal_moves)
+        self.turnoJugador = board.turn
 
     def UCTSelectChild(self):
-        s = sorted(self.childNodes, key=lambda c: c.wins / c.visits +
-                   math.sqrt(2 * math.log(self.visits) / c.visits))[-1]
+        s = sorted(self.nodosHijos, key=lambda c: c.victorias / c.visitas +
+                   math.sqrt(2 * math.log(self.visitas) / c.visitas))[-1]
         return s
 
     def AddChild(self, m, s, board):
 
-        n = Node(move=m, parent=self, state=s, board=board)
-        self.untriedMoves.remove(m)
-        self.childNodes.append(n)
+        n = Node(movimiento=m, parent=self, state=s, board=board)
+        self.movimientosNoIntentados.remove(m)
+        self.nodosHijos.append(n)
         return n
 
     def Update(self, result):
-        self.visits += 1
-        self.wins += result
+        self.visitas += 1
+        self.victorias += result
 
     def __repr__(self):
-        return "[M:" + str(self.move) + " W/V:" + str(self.wins) + "/" + str(self.visits) + " U:" + str(self.untriedMoves) + "]"
+        return "[M:" + str(self.movimiento) + " W/V:" + str(self.victorias) + "/" + str(self.visitas) + " U:" + str(self.movimientosNoIntentados) + "]"
 
 
 def choice(movs):
@@ -52,13 +52,13 @@ def UCT(rootstate, itermax, board):
         state = copy.deepcopy(rootstate)
 
         # Select
-        while node.untriedMoves == [] and node.childNodes != []:
+        while node.movimientosNoIntentados == [] and node.nodosHijos != []:
             node = node.UCTSelectChild()
-            state.push(node.move)
+            state.push(node.movimiento)
 
         # Expand
-        if node.untriedMoves != []:
-            m = random.choice(node.untriedMoves)
+        if node.movimientosNoIntentados != []:
+            m = random.choice(node.movimientosNoIntentados)
             state.push(m)
             node = node.AddChild(m, state, board)
 
@@ -69,19 +69,19 @@ def UCT(rootstate, itermax, board):
         # Backpropagate
         while node != None:
             node.Update(resultados(state))
-            node = node.parentNode
+            node = node.nodoPadre
 
-    #print(rootnode.ChildrenToString())
-    return sorted(rootnode.childNodes, key=lambda c: c.visits)[-1].move
+   
+    return sorted(rootnode.nodosHijos, key=lambda c: c.visitas)[-1].movimiento
 
 
 def resultados(board):
     var = str(board.result())
     if(var == "1/2-1/2"):
-        return 1.1
+        return 1
     elif (var == "1-0"):
-        return 0.0
+        return 0
     elif (var == "0-1"):
-        return 2.0
+        return 2
     else:
-        return 1.1
+        return 1
