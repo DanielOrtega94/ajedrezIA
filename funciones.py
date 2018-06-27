@@ -1,4 +1,5 @@
 # import
+from pprint import pprint
 import chess
 import algoritmos as algo
 import mcts as no
@@ -6,16 +7,17 @@ import heuristicas as h
 import nodo as n
 import time
 
+# para poder ordenar los diccionarios al imprimir
+class SortedDisplayDict(dict):
+   def __str__(self):
+       return "{" + ", ".join("%r: %r" % (key, self[key]) for key in sorted(self)) + "}"
 
 ###########varibales globales################
-totales = []
-tiempo_g = []
-tiempo_m = []
-tiempo_mab = []
+#totales = []
 piezas_comidas_blancas, piezas_actuales_negras = {}, {}
 
-
 ###########################funciones####################
+
 def escribir_fichero(texto, archivo):
     F = open(archivo, "a")
     F.write(texto)
@@ -34,6 +36,10 @@ def piezas_comidas(board):
 
 def marcador(board):
     blancas, negras = piezas_comidas(board)
+    #blancas=sorted(blancas)
+    #negras=sorted(negras)
+    blancas = SortedDisplayDict(blancas)
+    negras = SortedDisplayDict(negras)    
     print("capturadas x negras", blancas)
     print("capturadas x blancas", negras)
 
@@ -75,7 +81,8 @@ def turno_jugador(board, prueba):
     if prueba:
         board.push(algo.greedy(board))
         return
-    marcador(board)
+   
+    marcador(board) 
     print(board)
     entrada = input()
     while(entrada):
@@ -92,6 +99,7 @@ def turno_jugador(board, prueba):
             mov = chess.Move.from_uci(entrada)
             if mov in board.legal_moves:
                 board.push(mov)
+                del mov
                 break
             print("movimiento invalido intente nuevamente")
         entrada = input()
@@ -109,8 +117,9 @@ def turno_ia(board, algoritmo, llamadas=0, llam=0, prueba=False):
         tiempo = final - inicio
         escribir_fichero(str(tiempo), "tiempos.txt")
         # print("tiempo tomado ", tiempo)
-        # tiempo_g.append(tiempo)
+        
         board.push(mov)
+        del mov
 
     elif algoritmo == "greedy_o":
         print("greedy_o")
@@ -120,8 +129,9 @@ def turno_ia(board, algoritmo, llamadas=0, llam=0, prueba=False):
         tiempo = final - inicio
         escribir_fichero(str(tiempo), "tiempos.txt")
         # print("tiempo tomado ", tiempo)
-        # tiempo_g.append(tiempo)
+        
         board.push(mov)
+        del mov
 
     elif algoritmo == "minimax_p":
         if not prueba:
@@ -131,8 +141,9 @@ def turno_ia(board, algoritmo, llamadas=0, llam=0, prueba=False):
             final = time.time()
             tiempo = final - inicio
             escribir_fichero(str(tiempo), "tiempos.txt")
-            # tiempo_m.append(tiempo)
+            
             board.push(mov)
+            del mov
         else:
             print(prueba)
             print("minimax_p")
@@ -141,7 +152,7 @@ def turno_ia(board, algoritmo, llamadas=0, llam=0, prueba=False):
             final = time.time()
             tiempo = final - inicio
             escribir_fichero(str(4) + ' ' + str(tiempo), "tiempos.txt")
-            # tiempo_m.append(tiempo)
+            
 
             print("minimax_p")
             inicio = time.time()
@@ -149,7 +160,7 @@ def turno_ia(board, algoritmo, llamadas=0, llam=0, prueba=False):
             final = time.time()
             tiempo = final - inicio
             escribir_fichero(str(5) + ' ' + str(tiempo), "tiempos.txt")
-            # tiempo_m.append(tiempo)
+            
 
             print("minimax_p")
             inicio = time.time()
@@ -157,7 +168,7 @@ def turno_ia(board, algoritmo, llamadas=0, llam=0, prueba=False):
             final = time.time()
             tiempo = final - inicio
             escribir_fichero(str(6) + ' ' + str(tiempo), "tiempos.txt")
-            # tiempo_m.append(tiempo)
+            
 
             print("minimax_p")
             inicio = time.time()
@@ -165,9 +176,10 @@ def turno_ia(board, algoritmo, llamadas=0, llam=0, prueba=False):
             final = time.time()
             tiempo = final - inicio
             escribir_fichero(str(7) + ' ' + str(tiempo), "tiempos.txt")
-            # tiempo_m.append(tiempo)
+            
 
             board.push(mov)
+            del mov
 
     elif algoritmo == "ab_minimax_p":
         if not prueba:
@@ -180,6 +192,7 @@ def turno_ia(board, algoritmo, llamadas=0, llam=0, prueba=False):
            # tiempo_mab.append(tiempo)
             mensaje_impreso(llamadas, llam, board)
             board.push(mov)
+            del mov
         else:
             print(prueba)
             print("ab_minimax_p")
@@ -188,7 +201,7 @@ def turno_ia(board, algoritmo, llamadas=0, llam=0, prueba=False):
             final = time.time()
             tiempo = final - inicio
             escribir_fichero(str(4) + ' ' + str(tiempo), "tiempos.txt")
-            # tiempo_m.append(tiempo)
+            
 
             print("ab_minimax_p")
             inicio = time.time()
@@ -196,7 +209,7 @@ def turno_ia(board, algoritmo, llamadas=0, llam=0, prueba=False):
             final = time.time()
             tiempo = final - inicio
             escribir_fichero(str(5) + ' ' + str(tiempo), "tiempos.txt")
-            # tiempo_m.append(tiempo)
+            
 
             print("ab_minimax_p")
             inicio = time.time()
@@ -204,7 +217,7 @@ def turno_ia(board, algoritmo, llamadas=0, llam=0, prueba=False):
             final = time.time()
             tiempo = final - inicio
             escribir_fichero(str(6) + ' ' + str(tiempo), "tiempos.txt")
-            # tiempo_m.append(tiempo)
+            
 
             print("ab_minimax_p")
             inicio = time.time()
@@ -214,6 +227,7 @@ def turno_ia(board, algoritmo, llamadas=0, llam=0, prueba=False):
             escribir_fichero(str(7) + ' ' + str(tiempo), "tiempos.txt")
 
             board.push(mov)
+            del mov
 
     elif algoritmo == "minimax_o":
         print("minimax_o")
@@ -222,8 +236,10 @@ def turno_ia(board, algoritmo, llamadas=0, llam=0, prueba=False):
         final = time.time()
         tiempo = final - inicio
         escribir_fichero(str(tiempo), "tiempos.txt")
-        # #tiempo_m.append(tiempo)
+        
         board.push(mov)
+        del mov
+
 
     elif algoritmo == "mcts":
         if not prueba:
@@ -233,7 +249,9 @@ def turno_ia(board, algoritmo, llamadas=0, llam=0, prueba=False):
             final = time.time()
             tiempo = final - inicio
             escribir_fichero(str(tiempo), "tiempos.txt")
+            print(tiempo)
             board.push(mov)
+            del mov
         else:
             print("mcts")
             inicio = time.time()
@@ -266,4 +284,4 @@ def turno_ia(board, algoritmo, llamadas=0, llam=0, prueba=False):
     if algoritmo == "prueba":
         porcentajes = llamadas / llam * 100
         escribir_fichero(str(porcentajes), "tiempos.txt")
-        totales.append(porcentajes)
+        #totales.append(porcentajes)

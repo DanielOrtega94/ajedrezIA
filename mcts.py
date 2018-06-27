@@ -14,35 +14,24 @@ class Node:
         self.movimientosNoIntentados = list(board.legal_moves)
         self.turnoJugador = board.turn
 
-    def UCTSelectChild(self):
+    def UCTseleccionarHijo(self):
         s = sorted(self.nodosHijos, key=lambda c: c.victorias / c.visitas +
                    math.sqrt(2 * math.log(self.visitas) / c.visitas))[-1]
         return s
 
-    def AddChild(self, m, s, board):
+    def AnadirHijo(self, m, s, board):
 
         n = Node(movimiento=m, parent=self, state=s, board=board)
         self.movimientosNoIntentados.remove(m)
         self.nodosHijos.append(n)
         return n
 
-    def Update(self, result):
+    def Actualizar(self, result):
         self.visitas += 1
         self.victorias += result
 
     def __repr__(self):
         return "[M:" + str(self.movimiento) + " W/V:" + str(self.victorias) + "/" + str(self.visitas) + " U:" + str(self.movimientosNoIntentados) + "]"
-
-
-def choice(movs):
-    nmovs = movs.count()
-    stop = random.randint(0, nmovs)
-    contador = 0
-    for i in movs:
-        if(contador == stop):
-            return i
-        contador += 1
-
 
 def UCT(rootstate, itermax, board):
     rootnode = Node(state=rootstate, board=board)
@@ -53,14 +42,14 @@ def UCT(rootstate, itermax, board):
 
         # Select
         while node.movimientosNoIntentados == [] and node.nodosHijos != []:
-            node = node.UCTSelectChild()
+            node = node.UCTseleccionarHijo()
             state.push(node.movimiento)
 
         # Expand
         if node.movimientosNoIntentados != []:
             m = random.choice(node.movimientosNoIntentados)
             state.push(m)
-            node = node.AddChild(m, state, board)
+            node = node.AnadirHijo(m, state, board)
 
         # rollout
         while not state.is_game_over()and list(state.legal_moves) != []:  # while state is non-terminal
@@ -68,7 +57,7 @@ def UCT(rootstate, itermax, board):
 
         # Backpropagate
         while node != None:
-            node.Update(resultados(state))
+            node.Actualizar(resultados(state))
             node = node.nodoPadre
 
    
