@@ -130,24 +130,28 @@ while linea != "":
     f.close()
     tiempo_1(minimax, minimax_a)
 '''
+
+
 def profundidades_mini():
     cuatro = 2.118420124053955
     cinco = 49.9095823764801
     seis = 1210.511376619339
+    mini = [cuatro, cinco, seis]
     # siete=
-    posiciones=[0,1,2]
-    plt.bar(posiciones[0],cuatro)
-    plt.bar(posiciones[1],cinco)
-    plt.bar(posiciones[2],seis)
-    plt.text(posiciones[0],cuatro, str(round(cuatro,1)), fontsize=6)
-    plt.text(posiciones[1],cinco, str(round(cinco,1)), fontsize=6)
-    plt.text(posiciones[2],seis, str(round(seis,1)), fontsize=6)
+    posiciones = [0, 1, 2]
+    plt.bar(posiciones[0], cuatro)
+    plt.bar(posiciones[1], cinco)
+    plt.bar(posiciones[2], seis)
+    plt.text(posiciones[0], cuatro, str(round(cuatro, 1)), fontsize=6)
+    plt.text(posiciones[1], cinco, str(round(cinco, 1)), fontsize=6)
+    plt.text(posiciones[2], seis, str(round(seis, 1)), fontsize=6)
+    plt.plot(mini, marker='x', linestyle=':', color='b', label="minimax")
     #plt.plot(cuatro, marker='x', linestyle=':', color='b', label="cuatro")
     #plt.plot(cinco,  marker='*', linestyle='-', color='r', label="cinco")
     #plt.plot(seis,  marker='*', linestyle='-', color='g', label="seis")
     #plt.plot(siete,  marker='*', linestyle='-', color='g', label="siete")
     plt.xlabel('Profundidades')
-    plt.xticks(posiciones,["4","5","6"] , rotation = 45)
+    plt.xticks(posiciones, ["4", "5", "6"], rotation=45)
     plt.ylabel('segundos')
     plt.title('Tiempos Profundidades Minimax')
     plt.grid()
@@ -159,78 +163,83 @@ def profundidades_ab():
     cuatro = 1.8808352947235107
     cinco = 47.39628863334656
     seis = 1117.0138058662415
+    mini = [cuatro, cinco, seis]
     # siete=
-    posiciones=[0,1,2]
-    plt.bar(posiciones[0],cuatro)
-    plt.bar(posiciones[1],cinco)
-    plt.bar(posiciones[2],seis)
-    plt.text(posiciones[0],cuatro, str(round(cuatro,1)), fontsize=6)
-    plt.text(posiciones[1],cinco, str(round(cinco,1)), fontsize=6)
-    plt.text(posiciones[2],seis, str(round(seis,1)), fontsize=6)
+    posiciones = [0, 1, 2]
+    plt.bar(posiciones[0], cuatro)
+    plt.bar(posiciones[1], cinco)
+    plt.bar(posiciones[2], seis)
+    plt.text(posiciones[0], cuatro, str(round(cuatro, 1)), fontsize=6)
+    plt.text(posiciones[1], cinco, str(round(cinco, 1)), fontsize=6)
+    plt.text(posiciones[2], seis, str(round(seis, 1)), fontsize=6)
+    plt.plot(mini, marker='x', linestyle=':', color='b', label="minimax")
 
     #plt.plot(cuatro, marker='x', linestyle=':', color='b', label="cuatro")
     #plt.plot(cinco,  marker='*', linestyle='-', color='r', label="cinco")
     #plt.plot(seis,  marker='*', linestyle='-', color='g', label="seis")
     #plt.plot(siete,  marker='*', linestyle='-', color='g', label="siete")
     plt.xlabel('Profundidades')
-    plt.xticks(posiciones,["4","5","6"] , rotation = 45)
+    plt.xticks(posiciones, ["4", "5", "6"], rotation=45)
     plt.ylabel('segundos')
     plt.title('Tiempos Profundidades Minimax_AB')
     plt.grid()
 
     plt.show()
 
-def profundidades_mcts():
-    cuatro = 39.47816014289856
-    cinco = 56.893070936203
-    seis = 479.43767833709717
-    siete= 129.09021472930908
 
-    posiciones=[0,1,2,3]
-    plt.bar(posiciones[0],cuatro)
-    plt.bar(posiciones[1],cinco)
-    plt.bar(posiciones[2],seis)
-    plt.bar(posiciones[3],siete)
-    plt.text(posiciones[0],cuatro, str(round(cuatro,1)), fontsize=6)
-    plt.text(posiciones[1],cinco, str(round(cinco,1)), fontsize=6)
-    plt.text(posiciones[2],seis, str(round(seis,1)), fontsize=6)
-    plt.text(posiciones[3],siete, str(round(seis,1)), fontsize=6)
-    #plt.plot(cuatro, marker='x', linestyle=':', color='b', label="cuatro")
+def profundidades_mcts():
+    cuatro = 36.49257731437683
+    cinco = 55.4264612197876
+    seis = 69.9779794216156
+    siete = 86.68532061576843
+    mini = [cuatro, cinco, seis,siete]    
+
+    posiciones = [0, 1, 2, 3]
+    plt.bar(posiciones[0], cuatro)
+    plt.bar(posiciones[1], cinco)
+    plt.bar(posiciones[2], seis)
+    plt.bar(posiciones[3], siete)
+    plt.text(posiciones[0], cuatro, str(round(cuatro, 1)), fontsize=6)
+    plt.text(posiciones[1], cinco, str(round(cinco, 1)), fontsize=6)
+    plt.text(posiciones[2], seis, str(round(seis, 1)), fontsize=6)
+    plt.text(posiciones[3], siete, str(round(siete, 1)), fontsize=6)
+    plt.plot(mini, marker='x', linestyle=':', color='b', label="cuatro")
     #plt.plot(cinco,  marker='*', linestyle='-', color='r', label="cinco")
     #plt.plot(seis,  marker='*', linestyle='-', color='g', label="seis")
     #plt.plot(siete,  marker='*', linestyle='-', color='g', label="siete")
     plt.xlabel('iteraciones')
-    plt.xticks(posiciones,["500","750","1000","1250"] , rotation = 45)
+    plt.xticks(posiciones, ["500", "750", "1000", "1250"], rotation=45)
     plt.ylabel('segundos')
     plt.title('Tiempos Profundidades MCTS')
     plt.grid()
 
-    plt.show()    
+    plt.show()
 
 
 def comparativa():
     cuatro_a = 1.8808352947235107
     cinco_a = 45.39628863334656
     seis_a = 1110.0138058662415
-
+    mini1=[cuatro_a,cinco_a,seis_a]
     cuatro = 2.118420124053955
     cinco = 49.9095823764801
     seis = 1210.511376619339
-  
-    posiciones=[0,1,2]
-    plt.bar(posiciones[0],cuatro)
-    plt.bar(posiciones[1],cinco)
-    plt.bar(posiciones[2],seis)
-    plt.bar(posiciones[0],cuatro_a)
-    plt.bar(posiciones[1],cinco_a)
-    plt.bar(posiciones[2],seis_a)
+    mini=[cuatro,cinco,seis]
 
-    #plt.plot(cuatro, marker='x', linestyle=':', color='b', label="cuatro")
-    #plt.plot(cinco,  marker='*', linestyle='-', color='r', label="cinco")
+    posiciones = [0, 1, 2]
+    plt.bar(posiciones[0], cuatro)
+    plt.bar(posiciones[1], cinco)
+    plt.bar(posiciones[2], seis)
+    plt.bar(posiciones[0], cuatro_a)
+    plt.bar(posiciones[1], cinco_a)
+    plt.bar(posiciones[2], seis_a)
+
+    plt.plot(mini1, marker='x', linestyle=':', color='b', label="cuatro")
+    plt.plot(mini,  marker='*', linestyle='-', color='r', label="cinco")
     #plt.plot(seis,  marker='*', linestyle='-', color='g', label="seis")
     #plt.plot(siete,  marker='*', linestyle='-', color='g', label="siete")
     plt.xlabel('Profundidades')
-    plt.xticks(posiciones,["4","5","6"] , rotation = 45)
+    plt.xticks(posiciones, ["4", "5", "6"], rotation=45)
     plt.ylabel('segundos')
     plt.title('Comparativa Tiempos y profundidades')
     plt.grid()

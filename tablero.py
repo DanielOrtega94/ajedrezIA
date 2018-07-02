@@ -14,7 +14,7 @@ print("seleecione un algortimo para ejecutar la IA")
 for element in algoritmos:
 	print(element,algoritmos[element])
 
-print("Ingrese el numero correposdiente")
+print("Ingrese el numero correspondiente")
 clave= int(input())
 board = chess.Board()
 print(algoritmos[clave])

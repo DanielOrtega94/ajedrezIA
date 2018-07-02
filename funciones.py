@@ -52,7 +52,7 @@ def validar(mov):
     return 'a' <= mov[0] <= 'h' and '1' <= mov[1] <= '8' and 'a' <= mov[2] <= 'h' and '1' <= mov[3] <= '8'
 
 
-def mensaje_impreso(a1, a2, board, prueba=False):
+def mensaje_impreso(a1, a2, board, prueba):
     if prueba:
         porcentaje = a1 / a2 * 100
         palabra1 = "Se han recorrido " + \
@@ -68,11 +68,16 @@ def mensaje_impreso(a1, a2, board, prueba=False):
 
 
 def juego(board, algoritmo, prueba=False):
-
+    os.system('cls')
+    tiempo=0
     while(not board.is_game_over()):
+        if(tiempo):
+            print("Tiempo tomado en calcular respuesta: ",tiempo)
         turno_jugador(board, prueba)
+            
         if not board.is_game_over():
-            turno_ia(board, algoritmo, prueba)
+            tiempo = turno_ia(board, algoritmo, prueba)
+            os.system('cls')
         else:
             break
     print(board.result)
@@ -80,7 +85,7 @@ def juego(board, algoritmo, prueba=False):
 
 # problema con el turno del jugador si el string no es de tam 4
 def turno_jugador(board, prueba):
-    os.system('cls')
+    
     print("turno numero: " + str(board.fullmove_number))
     print("Turno jugador....")
     if prueba:
@@ -110,7 +115,7 @@ def turno_jugador(board, prueba):
     return False
 
 
-def turno_ia(board, algoritmo, llamadas=0, llam=0, prueba=False):
+def turno_ia(board, algoritmo, prueba, llamadas=0, llam=0 ):
     print("Turno Computador....")
 
     if algoritmo == "greedy_p":
@@ -121,9 +126,9 @@ def turno_ia(board, algoritmo, llamadas=0, llam=0, prueba=False):
         tiempo = final - inicio
         escribir_fichero(str(tiempo), "tiempos.txt")
         # print("tiempo tomado ", tiempo)
-
         board.push(mov)
         del mov
+
 
     elif algoritmo == "greedy_o":
         print("greedy_o")
@@ -190,7 +195,7 @@ def turno_ia(board, algoritmo, llamadas=0, llam=0, prueba=False):
             tiempo = final - inicio
             escribir_fichero(str(tiempo), "tiempos.txt")
            # tiempo_mab.append(tiempo)
-            mensaje_impreso(llamadas, llam, board)
+            mensaje_impreso(llamadas, llam, board,prueba)
             board.push(mov)
             del mov
         else:
@@ -276,7 +281,7 @@ def turno_ia(board, algoritmo, llamadas=0, llam=0, prueba=False):
             final = time.time()
             tiempo = final - inicio
             escribir_fichero(str(tiempo), "tiempos.txt")
-
+    return tiempo        
     if algoritmo == "prueba":
         porcentajes = llamadas / llam * 100
         escribir_fichero(str(porcentajes), "tiempos.txt")
