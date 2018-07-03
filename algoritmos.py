@@ -1,5 +1,5 @@
 import heuristicas as h
-
+import nodo as n
 
 
 # emula w*h+w*h.....
@@ -25,6 +25,17 @@ def greedy(board):
             mejor_valor = valores
         board.pop()
     return mejor_movimiento
+
+#######################################################################
+
+
+def hacer_movimiento_m(board):
+    posibles = genera_hijo(board)
+    mejor_mov = n.Nodo("", -999)
+    for mov in posibles:
+        if mov.valor > mejor_mov.valor:
+            mejor_mov = mov
+    return mejor_mov.movimiento
 
 ##########################################################################
 
@@ -65,12 +76,52 @@ def minimax(board, llamadas, current_depth=0, max_depth=4):
                 best = algo
                 mejor_mov = i
         return best, mejor_mov, llamadas
+
+#########################################################################
+def minimax_a_(board, llamadas, current_depth=0, max_depth=4):
+    current_depth += 1
+    llamadas += 1
+
+    if current_depth == max_depth:
+        # valor heuristico
+        valor = valor_heuristicas(board)
+        return valor, None, llamadas
+
+    if current_depth % 2 == 0:
+        # Turno jugador minimo
+        best = float('inf')
+        mejor_mov = None
+       	posibles = genera_hijo(board)
+        for i in posibles:
+            board.push(i.movimiento)
+            algo, algo2, llamadas = minimax_a_(
+                board, llamadas, current_depth, max_depth)
+            board.pop()
+            if algo < best:
+                best = algo
+                mejor_mov = i
+
+        return best, mejor_mov, llamadas
+    else:
+        # Turno jugador maximo
+        best = float('-inf')
+        mejor_mov = None
+        posibles = genera_hijo(board)
+        for i in posibles:
+            board.push(i.movimiento)
+            algo, algo2, llamadas = minimax_a_(
+                board, llamadas, current_depth, max_depth)
+            board.pop()
+            if algo > best:
+                best = algo
+                mejor_mov = i
+        return best, mejor_mov, llamadas
+
 ##############################################################################
 
 def ab_minimax(board, llamadas, current_depth=0, max_depth=4, alpha=float("-inf"), beta=float("inf")):
     current_depth += 1
     llamadas += 1
-
     if current_depth == max_depth:
         # Obtiene valor heuristicas
         valor = valor_heuristicas(board)
@@ -109,38 +160,17 @@ def ab_minimax(board, llamadas, current_depth=0, max_depth=4, alpha=float("-inf"
                 break
         return (best, best_move, llamadas)
 
-#######################################################################
-def hacer_movimiento_m(board):
-    posibles = genera_hijo(board)
-    for mov in posibles:
-        mov.valor = minimax_a_(mov, board)
-    mejor_mov = posibles[0]
-    for mov in posibles:
-        if mov.valor > mejor_mov.valor:
-            mejor_mov = mov
-    return mejor_mov.movimiento
 
-#########################################################################
-def minimax_a_(node, board, current_depth=0, max_depth=4):
-    current_depth += 1
-    if current_depth == max_depth:
-        node.valor = valor_heuristicas(board)
-        return node.valor
-
-    if current_depth % 2 == 0:
-        return min([minimax_a_(child_node,board, current_depth) for child_node in genera_hijo(board)])
-
-    else:
-        return max([minimax_a_(child_node, board,current_depth) for child_node in genera_hijo(board)])
 
 ######################################################################
 def genera_hijo(lista):
     mov = []
     for i in lista.legal_moves:
         lista.push(i)
-        aux = n.Nodo(i, 0, lista.fen())
+        valor = valor_heuristicas(lista)
+        aux = n.Nodo(i, valor, lista.fen())
         mov.append(aux)
-        lista.pop()
+        lista.pop()    
     return mov
 
 

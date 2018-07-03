@@ -1,4 +1,4 @@
-from pprint import pprint
+
 import os
 import chess
 import algoritmos as algo
@@ -68,7 +68,7 @@ def mensaje_impreso(a1, a2, board, prueba):
 
 
 def juego(board, algoritmo, prueba=False):
-    os.system('cls')
+    #os.system('cls')
     tiempo=0
     while(not board.is_game_over()):
         if(tiempo):
@@ -77,7 +77,7 @@ def juego(board, algoritmo, prueba=False):
             
         if not board.is_game_over():
             tiempo = turno_ia(board, algoritmo, prueba)
-            os.system('cls')
+            #os.system('cls')
         else:
             break
     print(board.result)
@@ -150,7 +150,7 @@ def turno_ia(board, algoritmo, prueba, llamadas=0, llam=0 ):
             final = time.time()
             tiempo = final - inicio
             escribir_fichero(str(tiempo), "tiempos.txt")
-
+            print(valor)
             board.push(mov)
             del mov
         else:
@@ -234,12 +234,13 @@ def turno_ia(board, algoritmo, prueba, llamadas=0, llam=0 ):
     elif algoritmo == "minimax_o":
         print("minimax_o")
         inicio = time.time()
-        valor, mov, llam = algo.minimax_a_(board, llam)
+        valor,mov,llamadas= algo.minimax_a_(board, 0)
+        print(valor)
         final = time.time()
         tiempo = final - inicio
         escribir_fichero(str(tiempo), "tiempos.txt")
 
-        board.push(mov)
+        board.push(mov.movimiento)
         del mov
 
     elif algoritmo == "mcts":
