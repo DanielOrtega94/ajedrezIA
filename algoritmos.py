@@ -161,7 +161,6 @@ def ab_minimax(board, llamadas, current_depth=0, max_depth=4, alpha=float("-inf"
         return (best, best_move, llamadas)
 
 
-
 ######################################################################
 def genera_hijo(lista):
     mov = []
