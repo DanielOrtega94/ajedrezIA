@@ -192,7 +192,7 @@ def profundidades_mcts():
     cinco = 55.4264612197876
     seis = 69.9779794216156
     siete = 86.68532061576843
-    mini = [cuatro, cinco, seis,siete]    
+    mini = [cuatro, cinco, seis, siete]
 
     posiciones = [0, 1, 2, 3]
     plt.bar(posiciones[0], cuatro)
@@ -220,11 +220,11 @@ def comparativa():
     cuatro_a = 1.8808352947235107
     cinco_a = 45.39628863334656
     seis_a = 1110.0138058662415
-    mini1=[cuatro_a,cinco_a,seis_a]
+    mini1 = [cuatro_a, cinco_a, seis_a]
     cuatro = 2.118420124053955
     cinco = 49.9095823764801
     seis = 1210.511376619339
-    mini=[cuatro,cinco,seis]
+    mini = [cuatro, cinco, seis]
 
     posiciones = [0, 1, 2]
     plt.bar(posiciones[0], cuatro)

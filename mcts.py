@@ -3,6 +3,7 @@ import chess
 import random
 import copy
 
+
 class Node:
 
     def __init__(self, movimiento=None, parent=None, estado=None, board=None):
@@ -14,7 +15,7 @@ class Node:
         self.movimientosNoIntentados = list(board.legal_moves)
         self.turnoJugador = board.turn
 
-        #retonar el mayor
+        # retonar el mayor
     def UCTseleccionarHijo(self):
         s = sorted(self.nodosHijos, key=lambda c: c.victorias / c.visitas +
                    math.sqrt(2 * math.log(self.visitas) / c.visitas))[-1]
@@ -30,12 +31,13 @@ class Node:
         self.visitas += 1
         self.victorias += result
 
+
 def UCT(estadobase, itermax, board):
     rootnode = Node(estado=estadobase, board=board)
 
     for i in range(itermax):
         node = rootnode
-        #estado es una copia del tablero
+        # estado es una copia del tablero
         estado = copy.deepcopy(estadobase)
 
         # Select
@@ -54,7 +56,7 @@ def UCT(estadobase, itermax, board):
             estado.push(random.choice(list(estado.legal_moves)))
 
         # Backpropagate
-        while node != None:
+        while node is not None:
             node.Actualizar(resultados(estado))
             node = node.nodoPadre
 
