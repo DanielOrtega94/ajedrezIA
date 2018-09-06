@@ -1,7 +1,7 @@
-import math
 import chess
-import random
 import copy
+import math
+import random
 
 
 class Node:
@@ -52,7 +52,8 @@ def UCT(estadobase, itermax, board):
             node = node.AnadirHijo(m, estado, board)
 
         # rollout
-        while not estado.is_game_over()and list(estado.legal_moves) != []:  # while estado is non-terminal
+        # while estado is non-terminal
+        while not estado.is_game_over()and list(estado.legal_moves) != []:
             estado.push(random.choice(list(estado.legal_moves)))
 
         # Backpropagate

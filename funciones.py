@@ -1,13 +1,21 @@
-
-import os
-import chess
 import algoritmos as algo
-import mcts as no
+import chess
 import heuristicas as h
+import mcts as no
 import nodo as n
+import os
 import time
 
-# para poder ordenar los diccionarios al imprimir
+
+sleepy = 0
+algoritmos = {
+    1: "greedy_p",
+    2: "greedy_o",
+    3: "minimax_p",
+    4: "minimax_o",
+    5: "ab_minimax_p",
+    6: "mcts",
+}
 
 
 class SortedDisplayDict(dict):
@@ -17,6 +25,8 @@ class SortedDisplayDict(dict):
 
 
 piezas_comidas_blancas, piezas_actuales_negras = {}, {}
+iteraciones = [500, 750, 1000, 1250]
+profundidades = [4, 5, 6, 7]
 
 
 def escribir_fichero(texto, archivo):
@@ -37,12 +47,10 @@ def piezas_comidas(board):
 
 def marcador(board):
     blancas, negras = piezas_comidas(board)
-    # blancas=sorted(blancas)
-    # negras=sorted(negras)
     blancas = SortedDisplayDict(blancas)
     negras = SortedDisplayDict(negras)
-    print("capturadas x negras ", blancas)
     print("capturadas x blancas", negras)
+    print("capturadas x negras ", blancas)
 
 
 def validar(mov):
@@ -67,23 +75,48 @@ def mensaje_impreso(a1, a2, board, prueba):
 def juego(board, algoritmo, prueba=False):
     os.system('cls')
     tiempo = 0
-    while(not board.is_game_over()):
-        if(tiempo):
-            print("Tiempo tomado en calcular respuesta: ", tiempo)
-        turno_jugador(board, prueba)
+    if(algoritmo != "competencia"):
+        while(not board.is_game_over()):
+            print("turno numero: " + str(board.fullmove_number))
+            if(tiempo):
+                print("Tiempo tomado en calcular respuesta: ", tiempo)
+            turno_jugador(board, prueba)
 
-        if not board.is_game_over():
-            tiempo = turno_ia(board, algoritmo, prueba)
+            if not board.is_game_over():
+                print("Turno Computador....")
+                tiempo = turno_ia(board, algoritmo, prueba)
+                os.system('cls')
+            else:
+                break
+    else:
+        print("seleccione los algoritmos para ejecutar")
+        for element in algoritmos:
+            print(element, algoritmos[element])
+        clave = int(input())
+        clave1 = int(input())
+        while(not board.is_game_over()):
+            print("turno numero: " + str(board.fullmove_number))
+            marcador(board)
+            print(board)
+            if(tiempo and tiempo1):
+                print("IA1", tiempo)
+                print("IA2", tiempo1)
+            tiempo = turno_ia(board, algoritmos[clave], prueba)
+            tiempo1 = turno_ia(board, algoritmos[clave1], prueba)
+            time.sleep(sleepy)
             os.system('cls')
-        else:
-            break
-    print(board.result)
+
+    var = str(board.result())
+    if (var == "1-0"):
+        print("Gana las Blancas")
+    elif (var == "0-1"):
+        print("Gana las Negras")
+    else:
+        print("Empate")
 
 
 # problema con el turno del jugador si el string no es de tam 4
 def turno_jugador(board, prueba):
-
-    print("turno numero: " + str(board.fullmove_number))
     print("Turno jugador....")
     if prueba:
         board.push(algo.greedy(board))
@@ -113,7 +146,6 @@ def turno_jugador(board, prueba):
 
 
 def turno_ia(board, algoritmo, prueba, llamadas=0, llam=0):
-    print("Turno Computador....")
 
     if algoritmo == "greedy_p":
         print("greedy_p")
@@ -121,7 +153,7 @@ def turno_ia(board, algoritmo, prueba, llamadas=0, llam=0):
         mov = algo.greedy(board)
         final = time.time()
         tiempo = final - inicio
-        escribir_fichero(str(tiempo), "tiempos.txt")
+        # escribir_fichero(str(tiempo), "tiempos.txt")
         # print("tiempo tomado ", tiempo)
         board.push(mov)
         del mov
@@ -132,9 +164,8 @@ def turno_ia(board, algoritmo, prueba, llamadas=0, llam=0):
         mov = algo.hacer_movimiento_m(board)
         final = time.time()
         tiempo = final - inicio
-        escribir_fichero(str(tiempo), "tiempos.txt")
+        # escribir_fichero(str(tiempo), "tiempos.txt")
         # print("tiempo tomado ", tiempo)
-
         board.push(mov)
         del mov
 
@@ -145,40 +176,18 @@ def turno_ia(board, algoritmo, prueba, llamadas=0, llam=0):
             valor, mov, llam = algo.minimax(board, llam)
             final = time.time()
             tiempo = final - inicio
-            escribir_fichero(str(tiempo), "tiempos.txt")
-            print(valor)
+            # escribir_fichero(str(tiempo), "tiempos.txt")
+            # print(valor)
             board.push(mov)
             del mov
         else:
-            print(prueba)
-            print("minimax_p")
-            inicio = time.time()
-            valor, mov, llam = algo.minimax(board, llam)
-            final = time.time()
-            tiempo = final - inicio
-            escribir_fichero(str(4) + ' ' + str(tiempo), "tiempos.txt")
-
-            print("minimax_p")
-            inicio = time.time()
-            valor, mov, llam = algo.minimax(board, llam, max_depth=5)
-            final = time.time()
-            tiempo = final - inicio
-            escribir_fichero(str(5) + ' ' + str(tiempo), "tiempos.txt")
-
-            print("minimax_p")
-            inicio = time.time()
-            valor, mov, llam = algo.minimax(board, llam, max_depth=6)
-            final = time.time()
-            tiempo = final - inicio
-            escribir_fichero(str(6) + ' ' + str(tiempo), "tiempos.txt")
-
-            print("minimax_p")
-            inicio = time.time()
-            valor, mov, llam = algo.minimax(board, llam, max_depth=7)
-            final = time.time()
-            tiempo = final - inicio
-            escribir_fichero(str(7) + ' ' + str(tiempo), "tiempos.txt")
-
+            for ite in profundidades:
+                print("minimax_p")
+                inicio = time.time()
+                valor, mov, llam = algo.minimax(board, llam, max_depth=ite)
+                final = time.time()
+                tiempo = final - inicio
+                # escribir_fichero(str(ite) + ' ' + str(tiempo), "tiempos.txt")
             board.push(mov)
             del mov
 
@@ -189,40 +198,19 @@ def turno_ia(board, algoritmo, prueba, llamadas=0, llam=0):
             valor, mov, llamadas = algo.ab_minimax(board, llamadas)
             final = time.time()
             tiempo = final - inicio
-            escribir_fichero(str(tiempo), "tiempos.txt")
-            mensaje_impreso(llamadas, llam, board, prueba)
+            # escribir_fichero(str(tiempo), "tiempos.txt")
+            # mensaje_impreso(llamadas, llam, board, prueba)
             board.push(mov)
             del mov
         else:
-            print(prueba)
-            print("ab_minimax_p")
-            inicio = time.time()
-            valor, mov, llamadas = algo.minimax(board, llamadas)
-            final = time.time()
-            tiempo = final - inicio
-            escribir_fichero(str(4) + ' ' + str(tiempo), "tiempos.txt")
-
-            print("ab_minimax_p")
-            inicio = time.time()
-            valor, mov, llamadas = algo.minimax(board, llamadas, max_depth=5)
-            final = time.time()
-            tiempo = final - inicio
-            escribir_fichero(str(5) + ' ' + str(tiempo), "tiempos.txt")
-
-            print("ab_minimax_p")
-            inicio = time.time()
-            valor, mov, llamadas = algo.minimax(board, llamadas, max_depth=6)
-            final = time.time()
-            tiempo = final - inicio
-            escribir_fichero(str(6) + ' ' + str(tiempo), "tiempos.txt")
-
-            print("ab_minimax_p")
-            inicio = time.time()
-            valor, mov, llamadas = algo.minimax(board, llamadas, max_depth=6)
-            final = time.time()
-            tiempo = final - inicio
-            escribir_fichero(str(7) + ' ' + str(tiempo), "tiempos.txt")
-
+            for ite in profundidades:
+                print("ab_minimax_p")
+                inicio = time.time()
+                valor, mov, llamadas = algo.minimax(
+                    board, llamadas, max_depth=ite)
+                final = time.time()
+                tiempo = final - inicio
+                # escribir_fichero(str(ite) + ' ' + str(tiempo), "tiempos.txt")
             board.push(mov)
             del mov
 
@@ -230,11 +218,9 @@ def turno_ia(board, algoritmo, prueba, llamadas=0, llam=0):
         print("minimax_o")
         inicio = time.time()
         valor, mov, llamadas = algo.minimax_a_(board, 0)
-
         final = time.time()
         tiempo = final - inicio
-        escribir_fichero(str(tiempo), "tiempos.txt")
-
+        # escribir_fichero(str(tiempo), "tiempos.txt")
         board.push(mov.movimiento)
         del mov
 
@@ -242,43 +228,19 @@ def turno_ia(board, algoritmo, prueba, llamadas=0, llam=0):
         if not prueba:
             print("mcts")
             inicio = time.time()
-            mov = no.UCT(estadobase=board, itermax=700, board=board)
+            mov = no.UCT(estadobase=board, itermax=500, board=board)
             final = time.time()
             tiempo = final - inicio
-            escribir_fichero(str(tiempo), "tiempos.txt")
+            # escribir_fichero(str(tiempo), "tiempos.txt")
             print(tiempo)
             board.push(mov)
             del mov
         else:
-            print("mcts")
-            inicio = time.time()
-            mov = no.UCT(estadobase=board, itermax=500, board=board)
-            final = time.time()
-            tiempo = final - inicio
-            escribir_fichero(str(tiempo), "tiempos.txt")
-
-            print("mcts")
-            inicio = time.time()
-            mov = no.UCT(estadobase=board, itermax=750, board=board)
-            final = time.time()
-            tiempo = final - inicio
-            escribir_fichero(str(tiempo), "tiempos.txt")
-
-            print("mcts")
-            inicio = time.time()
-            mov = no.UCT(estadobase=board, itermax=1000, board=board)
-            final = time.time()
-            tiempo = final - inicio
-            escribir_fichero(str(tiempo), "tiempos.txt")
-
-            print("mcts")
-            inicio = time.time()
-            mov = no.UCT(estadobase=board, itermax=1250, board=board)
-            final = time.time()
-            tiempo = final - inicio
-            escribir_fichero(str(tiempo), "tiempos.txt")
+            for ite in iteraciones:
+                print("mcts")
+                inicio = time.time()
+                mov = no.UCT(estadobase=board, itermax=ite, board=board)
+                final = time.time()
+                tiempo = final - inicio
+                # escribir_fichero(str(tiempo), "tiempos.txt")
     return tiempo
-    if algoritmo == "prueba":
-        porcentajes = llamadas / llam * 100
-        escribir_fichero(str(porcentajes), "tiempos.txt")
-        # totales.append(porcentajes)

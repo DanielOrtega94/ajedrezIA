@@ -1,5 +1,5 @@
-import matplotlib.pyplot as plt
 import ast
+import matplotlib.pyplot as plt
 import numpy as np
 
 greedy = []
@@ -41,7 +41,6 @@ def asintotico(greedy, minimax, abminimax):
     array_fichero(minimax)
     array_fichero(abminimax)
     plt.plot(array)
-    #S1.plot(style='k--',kind="bar" )
     plt.xlabel('Turno')
     plt.ylabel('Porcentaje Poda')
     plt.title('Poda')
@@ -96,6 +95,7 @@ def graficar():
     f = open("tiempos.txt")
     linea = f.readline()
     flag = True
+
 
 '''
 while linea != "":
@@ -246,7 +246,28 @@ def comparativa():
 
     plt.show()
 
-profundidades_mini()
-profundidades_ab()
-comparativa()
-profundidades_mcts()
+
+def tiempo():
+    greedy = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    mini = [2.4, 6.8, 6, 17, 17.5, 17, 7.5, 7.8,
+            8.7, 14, 14.9, 14, 15, 13.5, 16, 11]
+    ab = [0.3, 2.3, 1.7, 7.5, 8, 7.4, 4.7, 5.4,
+          5.6, 10, 10.5, 10, 11.5, 10, 12, 8]
+    mcts = [61.8, 64.8, 62, 62.8, 64, 61.5, 62.3, 63,
+            62, 63.8, 61.9, 64, 62.5, 66, 62.8, 61]
+    plt.plot(greedy, marker='x', linestyle=':', color='b', label="greedy")
+    plt.plot(mini,  marker='*', linestyle='-', color='g', label="minimax")
+    plt.plot(ab,  marker='o', linestyle='--', color='r', label="ab_minimax")
+    plt.plot(mcts,  marker='x', linestyle=':', color='y', label="mcts")
+    plt.xlabel('Turno')
+    plt.ylabel('segundos')
+    plt.title('tiempos')
+    plt.grid()
+    plt.legend(loc='best')
+    plt.show()
+
+# profundidades_mini()
+# profundidades_ab()
+# comparativa()
+# profundidades_mcts()
+tiempo()

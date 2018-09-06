@@ -11,8 +11,6 @@ def valor_heuristicas(board):
     total_points += h.cuadrados(board, 50)
     return total_points
 
-##########################################################################
-
 
 def greedy(board):
     mejor_movimiento = 0
@@ -26,8 +24,6 @@ def greedy(board):
         board.pop()
     return mejor_movimiento
 
-#######################################################################
-
 
 def hacer_movimiento_m(board):
     posibles = genera_hijo(board)
@@ -36,8 +32,6 @@ def hacer_movimiento_m(board):
         if mov.valor > mejor_mov.valor:
             mejor_mov = mov
     return mejor_mov.movimiento
-
-##########################################################################
 
 
 def minimax(board, llamadas, current_depth=0, max_depth=4):
@@ -77,6 +71,7 @@ def minimax(board, llamadas, current_depth=0, max_depth=4):
                 mejor_mov = i
         return best, mejor_mov, llamadas
 
+
 #########################################################################
 def minimax_a_(board, llamadas, current_depth=0, max_depth=4):
     current_depth += 1
@@ -91,7 +86,7 @@ def minimax_a_(board, llamadas, current_depth=0, max_depth=4):
         # Turno jugador minimo
         best = float('inf')
         mejor_mov = None
-       	posibles = genera_hijo(board)
+        posibles = genera_hijo(board)
         for i in posibles:
             board.push(i.movimiento)
             algo, algo2, llamadas = minimax_a_(
@@ -119,6 +114,7 @@ def minimax_a_(board, llamadas, current_depth=0, max_depth=4):
 
 ##############################################################################
 
+
 def ab_minimax(board, llamadas, current_depth=0, max_depth=4, alpha=float("-inf"), beta=float("inf")):
     current_depth += 1
     llamadas += 1
@@ -144,7 +140,7 @@ def ab_minimax(board, llamadas, current_depth=0, max_depth=4, alpha=float("-inf"
                 break
         return best, best_move, llamadas
     else:
-         # Turno jugador maximo
+        # Turno jugador maximo
         best = float('-inf')
         best_move = None
         for i in board.legal_moves:
@@ -169,7 +165,5 @@ def genera_hijo(lista):
         valor = valor_heuristicas(lista)
         aux = n.Nodo(i, valor, lista.fen())
         mov.append(aux)
-        lista.pop()    
+        lista.pop()
     return mov
-
-
